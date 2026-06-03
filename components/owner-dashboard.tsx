@@ -300,7 +300,10 @@ export function OwnerDashboard() {
                     </div>
                   )}
                 </div>
-                <p className={`text-xs text-slate-500 mt-1 ${message.role === 'user' ? 'text-right mr-8' : 'ml-8'}`}>
+                <p 
+                  className={`text-xs text-slate-500 mt-1 ${message.role === 'user' ? 'text-right mr-8' : 'ml-8'}`}
+                  suppressHydrationWarning
+                >
                   {formatTime(message.timestamp)}
                 </p>
               </div>

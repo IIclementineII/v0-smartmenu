@@ -21,7 +21,8 @@ import {
   Edit2, 
   Send, 
   Bot,
-  User
+  User,
+  Loader2
 } from 'lucide-react'
 import { MenuItem, menuItems as initialMenuItems } from '@/lib/menu-data'
 
@@ -31,18 +32,22 @@ interface Message {
   content: string
 }
 
+const API_URL = 'https://smartmenu-agent-production.up.railway.app/api/chat'
+
 export function OwnerDashboard() {
   const [items, setItems] = useState<MenuItem[]>(initialMenuItems)
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
       role: 'assistant',
-      content: '您好老板！我可以帮您管理菜单。例如：\n• "将宫保鸡丁价格改为 $18.99"\n• "将麻婆豆腐设为售罄"\n• "将春卷库存设为 50"'
+      content: 'Hello! I can help you manage your menu. Try commands like:\n\n• "Update Kung Pao Chicken price to $18.99"\n• "Set Mapo Tofu as sold out"\n• "Change Edamame stock to 50"'
     }
   ])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const sessionId = useRef(`owner-session-${Date.now()}`)
   
   const totalDishes = items.length
   const vegetarianCount = items.filter(item => item.isVegetarian).length
@@ -60,66 +65,7 @@ export function OwnerDashboard() {
     ))
   }
   
-  const processCommand = (command: string): string => {
-    const lowerCommand = command.toLowerCase()
-    
-    // Price update command
-    const priceMatch = command.match(/(?:将)?(.+?)(?:的)?价格(?:改为|设为|改成)\s*\$?(\d+\.?\d*)/i)
-    if (priceMatch) {
-      const dishName = priceMatch[1].trim()
-      const newPrice = parseFloat(priceMatch[2])
-      const dish = items.find(item => item.name.includes(dishName))
-      if (dish) {
-        setItems(prev => prev.map(item => 
-          item.id === dish.id ? { ...item, price: newPrice } : item
-        ))
-        return `已将「${dish.name}」价格更新为 $${newPrice.toFixed(2)}`
-      }
-      return `未找到菜品「${dishName}」`
-    }
-    
-    // Stock update command
-    const stockMatch = command.match(/(?:将)?(.+?)(?:的)?库存(?:改为|设为|改成)\s*(\d+)/i)
-    if (stockMatch) {
-      const dishName = stockMatch[1].trim()
-      const newStock = parseInt(stockMatch[2])
-      const dish = items.find(item => item.name.includes(dishName))
-      if (dish) {
-        setItems(prev => prev.map(item => 
-          item.id === dish.id ? { ...item, stock: newStock } : item
-        ))
-        return `已将「${dish.name}」库存更新为 ${newStock}`
-      }
-      return `未找到菜品「${dishName}」`
-    }
-    
-    // Availability toggle
-    if (lowerCommand.includes('售罄') || lowerCommand.includes('下架')) {
-      const dishName = command.replace(/(?:将)?/g, '').replace(/(?:设为)?(?:售罄|下架)/g, '').trim()
-      const dish = items.find(item => item.name.includes(dishName))
-      if (dish) {
-        setItems(prev => prev.map(item => 
-          item.id === dish.id ? { ...item, available: false } : item
-        ))
-        return `已将「${dish.name}」设为售罄`
-      }
-    }
-    
-    if (lowerCommand.includes('上架') || lowerCommand.includes('恢复')) {
-      const dishName = command.replace(/(?:将)?/g, '').replace(/(?:设为)?(?:上架|恢复)/g, '').trim()
-      const dish = items.find(item => item.name.includes(dishName))
-      if (dish) {
-        setItems(prev => prev.map(item => 
-          item.id === dish.id ? { ...item, available: true } : item
-        ))
-        return `已将「${dish.name}」恢复上架`
-      }
-    }
-    
-    return '抱歉，我没有理解您的指令。请尝试类似这样的命令：\n• "将宫保鸡丁价格改为 $18.99"\n• "将麻婆豆腐设为售罄"\n• "将春卷库存设为 50"'
-  }
-  
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!input.trim() || isLoading) return
     
@@ -132,17 +78,43 @@ export function OwnerDashboard() {
     setMessages(prev => [...prev, userMessage])
     setInput('')
     setIsLoading(true)
+    setError(null)
     
-    setTimeout(() => {
-      const response = processCommand(input)
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: input,
+          sessionId: sessionId.current
+        })
+      })
+      
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`)
+      }
+      
+      const data = await response.json()
+      
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: response
+        content: data.response || data.message || 'Command received. Please check the table for updates.'
       }
       setMessages(prev => [...prev, assistantMessage])
+    } catch (err) {
+      setError('Failed to process command. Please try again.')
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: 'Sorry, I\'m having trouble connecting right now. Please try again in a moment.'
+      }
+      setMessages(prev => [...prev, errorMessage])
+    } finally {
       setIsLoading(false)
-    }, 600)
+    }
   }
   
   return (
@@ -150,8 +122,8 @@ export function OwnerDashboard() {
       {/* Header with Stats */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">金龙餐厅</h1>
-          <p className="text-muted-foreground">菜单管理后台</p>
+          <h1 className="text-2xl font-bold text-foreground">Golden Dragon Restaurant</h1>
+          <p className="text-muted-foreground">Menu Management Dashboard</p>
         </div>
       </div>
       
@@ -164,7 +136,7 @@ export function OwnerDashboard() {
                 <UtensilsCrossed className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">菜品总数</p>
+                <p className="text-sm text-muted-foreground">Total Dishes</p>
                 <p className="text-2xl font-bold text-foreground">{totalDishes}</p>
               </div>
             </div>
@@ -177,7 +149,7 @@ export function OwnerDashboard() {
                 <Leaf className="h-5 w-5 text-emerald-500" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">素食菜品</p>
+                <p className="text-sm text-muted-foreground">Vegetarian</p>
                 <p className="text-2xl font-bold text-foreground">{vegetarianCount}</p>
               </div>
             </div>
@@ -190,7 +162,7 @@ export function OwnerDashboard() {
                 <Flame className="h-5 w-5 text-red-500" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">辣味菜品</p>
+                <p className="text-sm text-muted-foreground">Spicy</p>
                 <p className="text-2xl font-bold text-foreground">{spicyCount}</p>
               </div>
             </div>
@@ -205,12 +177,12 @@ export function OwnerDashboard() {
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/50">
-                  <TableHead>菜品名称</TableHead>
-                  <TableHead>分类</TableHead>
-                  <TableHead>价格</TableHead>
-                  <TableHead>库存</TableHead>
-                  <TableHead>状态</TableHead>
-                  <TableHead className="text-right">操作</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Price</TableHead>
+                  <TableHead>Stock</TableHead>
+                  <TableHead>Available</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -236,7 +208,7 @@ export function OwnerDashboard() {
                           onCheckedChange={() => toggleAvailability(item.id)}
                         />
                         <span className={`text-sm ${item.available ? 'text-emerald-600' : 'text-red-500'}`}>
-                          {item.available ? '上架中' : '已售罄'}
+                          {item.available ? 'Active' : 'Sold Out'}
                         </span>
                       </div>
                     </TableCell>
@@ -258,8 +230,8 @@ export function OwnerDashboard() {
         <CardContent className="p-4">
           <div className="flex items-center gap-2 mb-3">
             <Bot className="h-5 w-5 text-primary" />
-            <h3 className="font-semibold text-foreground">AI 助手</h3>
-            <span className="text-sm text-muted-foreground">- 用自然语言管理菜单</span>
+            <h3 className="font-semibold text-foreground">AI Assistant</h3>
+            <span className="text-sm text-muted-foreground">- Manage menu with natural language</span>
           </div>
           
           <ScrollArea className="h-32 mb-3 rounded-lg bg-muted/30 p-3" ref={scrollRef}>
@@ -295,23 +267,26 @@ export function OwnerDashboard() {
                   <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
                     <Bot className="h-3 w-3 text-primary" />
                   </div>
-                  <div className="bg-card border rounded-lg px-3 py-2">
-                    <div className="flex gap-1">
-                      <span className="w-1.5 h-1.5 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                      <span className="w-1.5 h-1.5 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                      <span className="w-1.5 h-1.5 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
-                    </div>
+                  <div className="bg-card border rounded-lg px-3 py-2 flex items-center gap-2">
+                    <Loader2 className="h-3 w-3 animate-spin text-primary" />
+                    <span className="text-sm text-muted-foreground">Processing...</span>
                   </div>
                 </div>
               )}
             </div>
           </ScrollArea>
           
+          {error && (
+            <div className="mb-3 py-2 px-3 bg-destructive/10 text-destructive text-sm rounded-lg">
+              {error}
+            </div>
+          )}
+          
           <form onSubmit={handleSubmit} className="flex gap-2">
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="输入指令，如：将宫保鸡丁价格改为 $18.99"
+              placeholder="e.g., Update Kung Pao Chicken price to $18.99"
               className="flex-1"
               disabled={isLoading}
             />

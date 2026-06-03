@@ -14,8 +14,8 @@ export function CustomerView({ items }: CustomerViewProps) {
       {/* Left Panel - Menu Grid */}
       <div className="w-full lg:w-[40%] overflow-auto">
         <div className="mb-4">
-          <h2 className="text-xl font-semibold text-foreground">我们的菜品</h2>
-          <p className="text-sm text-muted-foreground">点击查看详情或询问助手</p>
+          <h2 className="text-xl font-semibold text-foreground">Our Menu</h2>
+          <p className="text-sm text-muted-foreground">Click a dish or ask the assistant</p>
         </div>
         <MenuGrid items={items} />
       </div>

@@ -5,97 +5,33 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Send, User, Bot } from 'lucide-react'
-import { MenuItem, menuItems, getVegetarianDishes, getSpicyDishes, getDishesWithoutAllergen } from '@/lib/menu-data'
+import { Send, User, Bot, Loader2 } from 'lucide-react'
 
 interface Message {
   id: string
   role: 'user' | 'assistant'
   content: string
-  dishes?: MenuItem[]
 }
 
 interface CustomerChatProps {
   className?: string
 }
 
-function generateResponse(query: string): { text: string; dishes: MenuItem[] } {
-  const lowerQuery = query.toLowerCase()
-  
-  if (lowerQuery.includes('素') || lowerQuery.includes('vegetarian') || lowerQuery.includes('蔬菜')) {
-    const dishes = getVegetarianDishes()
-    return {
-      text: `我们有 ${dishes.length} 道素食菜品供您选择：`,
-      dishes
-    }
-  }
-  
-  if (lowerQuery.includes('辣') || lowerQuery.includes('spicy')) {
-    const dishes = getSpicyDishes()
-    return {
-      text: `以下是我们的 ${dishes.length} 道辣味菜品：`,
-      dishes
-    }
-  }
-  
-  if (lowerQuery.includes('不辣') || lowerQuery.includes('mild') || lowerQuery.includes('清淡')) {
-    const dishes = menuItems.filter(item => !item.isSpicy)
-    return {
-      text: `以下是我们的 ${dishes.length} 道不辣的菜品：`,
-      dishes
-    }
-  }
-  
-  if (lowerQuery.includes('花生') || lowerQuery.includes('peanut')) {
-    const dishes = getDishesWithoutAllergen('花生')
-    return {
-      text: `以下 ${dishes.length} 道菜品不含花生：`,
-      dishes
-    }
-  }
-  
-  if (lowerQuery.includes('麸质') || lowerQuery.includes('gluten')) {
-    const dishes = getDishesWithoutAllergen('麸质')
-    return {
-      text: `以下 ${dishes.length} 道菜品不含麸质：`,
-      dishes
-    }
-  }
-  
-  if (lowerQuery.includes('推荐') || lowerQuery.includes('recommend') || lowerQuery.includes('特色')) {
-    const dishes = menuItems.filter(item => item.price > 15)
-    return {
-      text: '以下是我们今日特别推荐的菜品：',
-      dishes
-    }
-  }
-  
-  if (lowerQuery.includes('便宜') || lowerQuery.includes('cheap') || lowerQuery.includes('实惠')) {
-    const dishes = menuItems.filter(item => item.price < 12)
-    return {
-      text: '以下是我们的实惠之选（$12以下）：',
-      dishes
-    }
-  }
-  
-  return {
-    text: '我可以帮您找到合适的菜品！请告诉我您的需求，例如：\n• "有什么素食菜品？"\n• "有什么辣的菜？"\n• "有什么不含花生的菜？"\n• "今日特别推荐"',
-    dishes: []
-  }
-}
+const API_URL = 'https://smartmenu-agent-production.up.railway.app/api/chat'
 
 export function CustomerChat({ className }: CustomerChatProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
       role: 'assistant',
-      content: '您好！欢迎光临金龙餐厅！我是您的智能菜单助手。您可以问我任何关于我们菜品的问题，例如：\n• "有什么素食菜品？"\n• "推荐一些不辣的菜"\n• "有什么不含花生的菜？"',
-      dishes: []
+      content: 'Welcome to Golden Dragon Restaurant! I\'m your menu assistant. Feel free to ask me anything about our dishes, such as:\n\n• "What vegetarian dishes do you have?"\n• "Any dishes without peanuts?"\n• "What are your spicy options?"'
     }
   ])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const sessionId = useRef(`session-${Date.now()}`)
   
   useEffect(() => {
     if (scrollRef.current) {
@@ -116,19 +52,43 @@ export function CustomerChat({ className }: CustomerChatProps) {
     setMessages(prev => [...prev, userMessage])
     setInput('')
     setIsLoading(true)
+    setError(null)
     
-    // Simulate AI response delay
-    setTimeout(() => {
-      const response = generateResponse(input)
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: input,
+          sessionId: sessionId.current
+        })
+      })
+      
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`)
+      }
+      
+      const data = await response.json()
+      
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: response.text,
-        dishes: response.dishes
+        content: data.response || data.message || 'I received your message but couldn\'t process it properly.'
       }
       setMessages(prev => [...prev, assistantMessage])
+    } catch (err) {
+      setError('Failed to get response. Please try again.')
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: 'Sorry, I\'m having trouble connecting right now. Please try again in a moment.'
+      }
+      setMessages(prev => [...prev, errorMessage])
+    } finally {
       setIsLoading(false)
-    }, 800)
+    }
   }
   
   return (
@@ -136,9 +96,9 @@ export function CustomerChat({ className }: CustomerChatProps) {
       <div className="p-4 border-b bg-primary/5">
         <div className="flex items-center gap-2">
           <Bot className="h-5 w-5 text-primary" />
-          <h2 className="font-semibold text-foreground">菜单助手</h2>
+          <h2 className="font-semibold text-foreground">Menu Assistant</h2>
         </div>
-        <p className="text-sm text-muted-foreground mt-1">向我询问任何关于菜品的问题</p>
+        <p className="text-sm text-muted-foreground mt-1">Ask me anything about our menu</p>
       </div>
       
       <ScrollArea className="flex-1 p-4" ref={scrollRef}>
@@ -161,33 +121,6 @@ export function CustomerChat({ className }: CustomerChatProps) {
                 }`}
               >
                 <p className="text-sm whitespace-pre-line">{message.content}</p>
-                {message.dishes && message.dishes.length > 0 && (
-                  <div className="mt-3 space-y-2">
-                    {message.dishes.map((dish) => (
-                      <div
-                        key={dish.id}
-                        className="bg-card rounded-lg p-3 border shadow-sm"
-                      >
-                        <div className="flex items-center gap-2">
-                          <span className="text-xl">{dish.emoji}</span>
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="font-medium text-foreground">{dish.name}</span>
-                              {dish.isVegetarian && (
-                                <span className="text-xs bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded">素食</span>
-                              )}
-                              {dish.isSpicy && (
-                                <span className="text-xs bg-red-100 text-red-700 px-1.5 py-0.5 rounded">辣</span>
-                              )}
-                            </div>
-                            <p className="text-sm text-muted-foreground">{dish.description}</p>
-                          </div>
-                          <span className="font-bold text-primary">${dish.price.toFixed(2)}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
               </div>
               {message.role === 'user' && (
                 <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
@@ -201,24 +134,27 @@ export function CustomerChat({ className }: CustomerChatProps) {
               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                 <Bot className="h-4 w-4 text-primary" />
               </div>
-              <div className="bg-muted rounded-2xl px-4 py-3">
-                <div className="flex gap-1">
-                  <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                  <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                  <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
-                </div>
+              <div className="bg-muted rounded-2xl px-4 py-3 flex items-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                <span className="text-sm text-muted-foreground">Thinking...</span>
               </div>
             </div>
           )}
         </div>
       </ScrollArea>
       
+      {error && (
+        <div className="px-4 py-2 bg-destructive/10 text-destructive text-sm">
+          {error}
+        </div>
+      )}
+      
       <form onSubmit={handleSubmit} className="p-4 border-t">
         <div className="flex gap-2">
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="输入您的问题..."
+            placeholder="Ask about our menu..."
             className="flex-1"
             disabled={isLoading}
           />

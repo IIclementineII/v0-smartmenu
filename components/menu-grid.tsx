@@ -26,12 +26,12 @@ export function MenuGrid({ items, onItemClick }: MenuGridProps) {
                   <h3 className="font-semibold text-foreground truncate">{item.name}</h3>
                   {item.isVegetarian && (
                     <Badge className="bg-emerald-500 text-white hover:bg-emerald-600 text-xs">
-                      素食
+                      Vegetarian
                     </Badge>
                   )}
                   {item.isSpicy && (
                     <Badge className="bg-red-500 text-white hover:bg-red-600 text-xs">
-                      辣
+                      Spicy
                     </Badge>
                   )}
                 </div>

@@ -18,7 +18,7 @@ export default function SmartMenuPage() {
             </div>
             <div>
               <h1 className="text-xl font-bold text-foreground">SmartMenu</h1>
-              <p className="text-sm text-muted-foreground">金龙餐厅智能助手</p>
+              <p className="text-sm text-muted-foreground">Golden Dragon Restaurant AI Assistant</p>
             </div>
           </div>
         </div>
@@ -30,11 +30,11 @@ export default function SmartMenuPage() {
           <TabsList className="mb-6 bg-muted/80">
             <TabsTrigger value="customer" className="gap-2">
               <User className="h-4 w-4" />
-              顾客端
+              Customer
             </TabsTrigger>
             <TabsTrigger value="owner" className="gap-2">
               <LayoutDashboard className="h-4 w-4" />
-              管理后台
+              Owner Dashboard
             </TabsTrigger>
           </TabsList>
           

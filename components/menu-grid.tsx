@@ -1,95 +1,168 @@
 'use client'
 
-import { Card, CardContent } from '@/components/ui/card'
+import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { MenuItem } from '@/lib/menu-data'
-import { Flame, Leaf, Bird, IceCream } from 'lucide-react'
+import { Flame, Leaf, Bird, IceCream, Star, MessageSquarePlus } from 'lucide-react'
 
 interface MenuGridProps {
   items: MenuItem[]
-  onItemClick?: (item: MenuItem) => void
+  onAddToInquiry?: (item: MenuItem) => void
 }
 
-function getGradientClass(item: MenuItem): string {
-  if (item.category === 'Dessert') {
-    return 'from-pink-400 via-pink-500 to-purple-500'
-  }
-  if (item.category === 'Specialty' || item.name.includes('Duck')) {
-    return 'from-sky-400 via-cyan-500 to-teal-500'
-  }
-  if (item.isVegetarian) {
-    return 'from-emerald-400 via-emerald-500 to-green-600'
-  }
-  if (item.isSpicy) {
-    return 'from-orange-400 via-red-500 to-red-600'
-  }
-  return 'from-amber-400 via-amber-500 to-orange-500'
-}
+type Filter = 'All' | 'Vegetarian' | 'Spicy' | 'Allergen-Free'
+
+const FILTERS: Filter[] = ['All', 'Vegetarian', 'Spicy', 'Allergen-Free']
+const SPECIALS_IDS = ['1', '4', '7'] // Kung Pao Chicken, Peking Duck, Buddha Delight
 
 function getCategoryIcon(item: MenuItem) {
-  if (item.category === 'Dessert') {
-    return <IceCream className="h-6 w-6" />
-  }
-  if (item.category === 'Specialty' || item.name.includes('Duck')) {
-    return <Bird className="h-6 w-6" />
-  }
-  if (item.isVegetarian) {
-    return <Leaf className="h-6 w-6" />
-  }
-  if (item.isSpicy) {
-    return <Flame className="h-6 w-6" />
-  }
-  return <Flame className="h-6 w-6" />
+  if (item.category === 'Dessert') return <IceCream className="h-5 w-5" />
+  if (item.category === 'Specialty' || item.name.includes('Duck')) return <Bird className="h-5 w-5" />
+  if (item.isVegetarian) return <Leaf className="h-5 w-5" />
+  return <Flame className="h-5 w-5" />
 }
 
-export function MenuGrid({ items, onItemClick }: MenuGridProps) {
+function getIconBg(item: MenuItem): string {
+  if (item.category === 'Dessert') return 'from-pink-400 to-purple-500'
+  if (item.category === 'Specialty' || item.name.includes('Duck')) return 'from-sky-400 to-teal-500'
+  if (item.isVegetarian && item.isSpicy) return 'from-emerald-400 to-amber-500'
+  if (item.isVegetarian) return 'from-emerald-400 to-green-600'
+  if (item.isSpicy) return 'from-orange-400 to-red-600'
+  return 'from-amber-400 to-orange-500'
+}
+
+function DishCard({
+  item,
+  index,
+  onAddToInquiry,
+}: {
+  item: MenuItem
+  index: number
+  onAddToInquiry?: (item: MenuItem) => void
+}) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      {items.map((item) => (
-        <Card 
-          key={item.id} 
-          className="cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 overflow-hidden group py-0"
-          onClick={() => onItemClick?.(item)}
-        >
-          <CardContent className="p-0">
-            {/* Gradient Header */}
-            <div className={`h-20 bg-gradient-to-br ${getGradientClass(item)} relative overflow-hidden`}>
-              <div className="absolute inset-0 bg-black/10" />
-              <div className="absolute inset-0 flex items-center justify-center text-white/90">
-                {getCategoryIcon(item)}
+    <div
+      className="glass-jade rounded-2xl overflow-hidden group cursor-default transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 fade-up relative"
+      style={{ animationDelay: `${index * 60}ms` }}
+    >
+      {/* Icon strip */}
+      <div className={`h-14 bg-gradient-to-br ${getIconBg(item)} flex items-center justify-center relative overflow-hidden`}>
+        <div className="text-white/90">{getCategoryIcon(item)}</div>
+        <div className="absolute -top-3 -right-3 w-10 h-10 bg-white/10 rounded-full" />
+        <div className="absolute -bottom-2 -left-2 w-8 h-8 bg-white/10 rounded-full" />
+      </div>
+
+      {/* Body */}
+      <div className="p-3">
+        <div className="flex items-start justify-between gap-1 mb-1">
+          <h3 className="font-semibold text-foreground text-sm leading-tight">{item.name}</h3>
+          <span className="text-amber-600 font-bold text-sm whitespace-nowrap">${item.price.toFixed(2)}</span>
+        </div>
+
+        <p className="text-xs text-muted-foreground mb-2 line-clamp-2 leading-relaxed">{item.description}</p>
+
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex gap-1 flex-wrap">
+            {item.isVegetarian && (
+              <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 text-[10px] px-1.5 py-0 h-4">
+                <Leaf className="h-2.5 w-2.5 mr-0.5" />Veg
+              </Badge>
+            )}
+            {item.isSpicy && (
+              <Badge className="bg-red-100 text-red-700 border-red-200 text-[10px] px-1.5 py-0 h-4">
+                <Flame className="h-2.5 w-2.5 mr-0.5" />Spicy
+              </Badge>
+            )}
+          </div>
+
+          {/* Hover button */}
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => onAddToInquiry?.(item)}
+            className="h-6 px-2 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800 gap-0.5"
+          >
+            <MessageSquarePlus className="h-3 w-3" />
+            Ask
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function MenuGrid({ items, onAddToInquiry }: MenuGridProps) {
+  const [activeFilter, setActiveFilter] = useState<Filter>('All')
+
+  const specials = items.filter(i => SPECIALS_IDS.includes(i.id))
+
+  const filtered = items.filter(item => {
+    if (activeFilter === 'All') return true
+    if (activeFilter === 'Vegetarian') return item.isVegetarian
+    if (activeFilter === 'Spicy') return item.isSpicy
+    if (activeFilter === 'Allergen-Free') return item.allergens.length === 0
+    return true
+  })
+
+  return (
+    <div className="space-y-6">
+      {/* Today's Specials */}
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
+          <h3 className="font-semibold text-foreground text-sm tracking-wide uppercase">Today&apos;s Specials</h3>
+        </div>
+        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
+          {specials.map(item => (
+            <div
+              key={item.id}
+              className="flex-shrink-0 w-44 glass-jade rounded-xl p-3 flex flex-col gap-1.5 hover:shadow-md transition-shadow duration-200"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-foreground leading-tight line-clamp-1">{item.name}</span>
+                <Badge className="bg-amber-100 text-amber-700 border-amber-200 text-[9px] px-1 py-0 h-4 ml-1 flex-shrink-0">
+                  Popular
+                </Badge>
               </div>
-              {/* Decorative circles */}
-              <div className="absolute -top-4 -right-4 w-16 h-16 bg-white/10 rounded-full" />
-              <div className="absolute -bottom-2 -left-2 w-12 h-12 bg-white/10 rounded-full" />
+              <p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">{item.description}</p>
+              <span className="text-amber-600 font-bold text-xs">${item.price.toFixed(2)}</span>
             </div>
-            
-            {/* Content */}
-            <div className="p-4">
-              <div className="flex items-start justify-between gap-2 mb-2">
-                <h3 className="font-semibold text-foreground leading-tight">{item.name}</h3>
-                <p className="text-lg font-bold text-emerald-600 whitespace-nowrap">${item.price.toFixed(2)}</p>
-              </div>
-              
-              <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{item.description}</p>
-              
-              <div className="flex items-center gap-2 flex-wrap">
-                {item.isVegetarian && (
-                  <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border-emerald-200 text-xs">
-                    <Leaf className="h-3 w-3 mr-1" />
-                    Vegetarian
-                  </Badge>
-                )}
-                {item.isSpicy && (
-                  <Badge className="bg-red-100 text-red-700 hover:bg-red-200 border-red-200 text-xs">
-                    <Flame className="h-3 w-3 mr-1" />
-                    Spicy
-                  </Badge>
-                )}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+          ))}
+        </div>
+      </div>
+
+      {/* Dietary Guide Filters */}
+      <div>
+        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">Dietary Guide</p>
+        <div className="flex gap-2 flex-wrap">
+          {FILTERS.map(f => (
+            <button
+              key={f}
+              onClick={() => setActiveFilter(f)}
+              className={`text-xs px-3 py-1.5 rounded-full border font-medium transition-all duration-200 ${
+                activeFilter === f
+                  ? 'bg-emerald-600 border-emerald-600 text-white shadow-sm'
+                  : 'bg-white/60 border-emerald-200 text-emerald-700 hover:bg-emerald-50'
+              }`}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Grid */}
+      <div className="grid grid-cols-2 gap-3">
+        {filtered.map((item, i) => (
+          <DishCard key={item.id} item={item} index={i} onAddToInquiry={onAddToInquiry} />
+        ))}
+        {filtered.length === 0 && (
+          <div className="col-span-2 py-10 text-center text-muted-foreground text-sm">
+            No dishes match this filter.
+          </div>
+        )}
+      </div>
     </div>
   )
 }

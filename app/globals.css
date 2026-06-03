@@ -4,24 +4,24 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(0.985 0.005 155);
-  --foreground: oklch(0.18 0.02 155);
+  --background: oklch(0.97 0.008 160);
+  --foreground: oklch(0.15 0.02 160);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.02 155);
+  --card-foreground: oklch(0.15 0.02 160);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.02 155);
+  --popover-foreground: oklch(0.15 0.02 160);
   --primary: oklch(0.6 0.17 160);
   --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.95 0.01 155);
-  --secondary-foreground: oklch(0.25 0.02 155);
-  --muted: oklch(0.94 0.01 155);
-  --muted-foreground: oklch(0.45 0.02 155);
+  --secondary: oklch(0.94 0.015 160);
+  --secondary-foreground: oklch(0.25 0.02 160);
+  --muted: oklch(0.93 0.01 160);
+  --muted-foreground: oklch(0.48 0.02 160);
   --accent: oklch(0.72 0.15 70);
   --accent-foreground: oklch(0.2 0.02 70);
   --destructive: oklch(0.6 0.22 25);
   --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.9 0.01 155);
-  --input: oklch(0.9 0.01 155);
+  --border: oklch(0.88 0.015 160);
+  --input: oklch(0.88 0.015 160);
   --ring: oklch(0.6 0.17 160);
   --chart-1: oklch(0.6 0.17 160);
   --chart-2: oklch(0.72 0.15 70);
@@ -29,48 +29,48 @@
   --chart-4: oklch(0.75 0.15 85);
   --chart-5: oklch(0.6 0.22 25);
   --radius: 0.75rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.18 0.02 155);
+  --sidebar: oklch(0.97 0.008 160);
+  --sidebar-foreground: oklch(0.15 0.02 160);
   --sidebar-primary: oklch(0.6 0.17 160);
   --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.95 0.01 155);
-  --sidebar-accent-foreground: oklch(0.25 0.02 155);
-  --sidebar-border: oklch(0.9 0.01 155);
+  --sidebar-accent: oklch(0.94 0.015 160);
+  --sidebar-accent-foreground: oklch(0.25 0.02 160);
+  --sidebar-border: oklch(0.88 0.015 160);
   --sidebar-ring: oklch(0.6 0.17 160);
 }
 
 .dark {
-  --background: oklch(0.16 0.02 155);
-  --foreground: oklch(0.98 0.01 155);
-  --card: oklch(0.2 0.02 155);
-  --card-foreground: oklch(0.98 0.01 155);
-  --popover: oklch(0.2 0.02 155);
-  --popover-foreground: oklch(0.98 0.01 155);
+  --background: oklch(0.14 0.02 160);
+  --foreground: oklch(0.98 0.005 160);
+  --card: oklch(0.19 0.02 160);
+  --card-foreground: oklch(0.98 0.005 160);
+  --popover: oklch(0.19 0.02 160);
+  --popover-foreground: oklch(0.98 0.005 160);
   --primary: oklch(0.65 0.17 160);
-  --primary-foreground: oklch(0.12 0.02 155);
-  --secondary: oklch(0.26 0.02 155);
-  --secondary-foreground: oklch(0.98 0.01 155);
-  --muted: oklch(0.26 0.02 155);
-  --muted-foreground: oklch(0.65 0.02 155);
+  --primary-foreground: oklch(0.1 0.02 160);
+  --secondary: oklch(0.25 0.02 160);
+  --secondary-foreground: oklch(0.98 0.005 160);
+  --muted: oklch(0.25 0.02 160);
+  --muted-foreground: oklch(0.62 0.02 160);
   --accent: oklch(0.72 0.15 70);
-  --accent-foreground: oklch(0.12 0.02 70);
+  --accent-foreground: oklch(0.1 0.02 70);
   --destructive: oklch(0.5 0.18 25);
-  --destructive-foreground: oklch(0.98 0.01 155);
-  --border: oklch(0.28 0.02 155);
-  --input: oklch(0.28 0.02 155);
+  --destructive-foreground: oklch(0.98 0.005 160);
+  --border: oklch(0.27 0.02 160);
+  --input: oklch(0.27 0.02 160);
   --ring: oklch(0.5 0.12 160);
   --chart-1: oklch(0.65 0.17 160);
   --chart-2: oklch(0.72 0.15 70);
   --chart-3: oklch(0.55 0.1 220);
   --chart-4: oklch(0.7 0.15 85);
   --chart-5: oklch(0.55 0.2 25);
-  --sidebar: oklch(0.2 0.02 155);
-  --sidebar-foreground: oklch(0.98 0.01 155);
+  --sidebar: oklch(0.19 0.02 160);
+  --sidebar-foreground: oklch(0.98 0.005 160);
   --sidebar-primary: oklch(0.65 0.17 160);
-  --sidebar-primary-foreground: oklch(0.12 0.02 155);
-  --sidebar-accent: oklch(0.26 0.02 155);
-  --sidebar-accent-foreground: oklch(0.98 0.01 155);
-  --sidebar-border: oklch(0.28 0.02 155);
+  --sidebar-primary-foreground: oklch(0.1 0.02 160);
+  --sidebar-accent: oklch(0.25 0.02 160);
+  --sidebar-accent-foreground: oklch(0.98 0.005 160);
+  --sidebar-border: oklch(0.27 0.02 160);
   --sidebar-ring: oklch(0.5 0.12 160);
 }
 
@@ -125,22 +125,68 @@
   }
 }
 
+/* ── Typing dots ─────────────────────────────────── */
 @keyframes bounce-dots {
   0%, 80%, 100% { transform: translateY(0); }
-  40% { transform: translateY(-6px); }
+  40%           { transform: translateY(-6px); }
+}
+.animate-bounce-dot-1 { animation: bounce-dots 1.4s infinite ease-in-out 0s; }
+.animate-bounce-dot-2 { animation: bounce-dots 1.4s infinite ease-in-out 0.2s; }
+.animate-bounce-dot-3 { animation: bounce-dots 1.4s infinite ease-in-out 0.4s; }
+
+/* ── Typewriter cursor ───────────────────────────── */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background: currentColor;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: blink 1s step-end infinite;
 }
 
-.animate-bounce-dot-1 {
-  animation: bounce-dots 1.4s infinite ease-in-out;
-  animation-delay: 0s;
+/* ── Stagger fade-up ─────────────────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up {
+  opacity: 0;
+  animation: fade-up 0.5s ease forwards;
 }
 
-.animate-bounce-dot-2 {
-  animation: bounce-dots 1.4s infinite ease-in-out;
-  animation-delay: 0.2s;
+/* ── Sliding tab indicator ───────────────────────── */
+.tab-indicator {
+  position: relative;
+}
+.tab-indicator::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #10b981;
+  border-radius: 99px;
+  transform: scaleX(0);
+  transition: transform 0.25s ease;
+}
+[data-state='active'].tab-indicator::after {
+  transform: scaleX(1);
 }
 
-.animate-bounce-dot-3 {
-  animation: bounce-dots 1.4s infinite ease-in-out;
-  animation-delay: 0.4s;
+/* ── Jade glass card ─────────────────────────────── */
+.glass-jade {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.22);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.glass-jade:hover {
+  background: rgba(16, 185, 129, 0.14);
+  border-color: rgba(16, 185, 129, 0.38);
 }

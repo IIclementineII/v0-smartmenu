@@ -1,28 +1,35 @@
 'use client'
 
+import { useRef } from 'react'
 import { MenuItem } from '@/lib/menu-data'
 import { MenuGrid } from './menu-grid'
-import { CustomerChat } from './customer-chat'
+import { CustomerChat, CustomerChatHandle } from './customer-chat'
 
 interface CustomerViewProps {
   items: MenuItem[]
 }
 
 export function CustomerView({ items }: CustomerViewProps) {
+  const chatRef = useRef<CustomerChatHandle>(null)
+
+  const handleAddToInquiry = (item: MenuItem) => {
+    chatRef.current?.sendMessage(`Tell me more about ${item.name}`)
+  }
+
   return (
-    <div className="flex flex-col lg:flex-row gap-6 h-full min-h-[calc(100vh-180px)]">
-      {/* Left Panel - Menu Grid */}
-      <div className="w-full lg:w-[40%] overflow-auto">
+    <div className="flex flex-col lg:flex-row gap-5 min-h-[calc(100vh-200px)]">
+      {/* Left Panel — 65% */}
+      <div className="w-full lg:w-[65%] overflow-auto">
         <div className="mb-4">
-          <h2 className="text-xl font-semibold text-foreground">Our Menu</h2>
-          <p className="text-sm text-muted-foreground">Click a dish or ask the assistant</p>
+          <h2 className="text-lg font-semibold text-foreground">Our Menu</h2>
+          <p className="text-sm text-muted-foreground">Hover a dish to ask the AI about it, or use the filters below.</p>
         </div>
-        <MenuGrid items={items} />
+        <MenuGrid items={items} onAddToInquiry={handleAddToInquiry} />
       </div>
-      
-      {/* Right Panel - Chat */}
-      <div className="w-full lg:w-[60%] lg:min-h-0 min-h-[400px]">
-        <CustomerChat className="h-full" />
+
+      {/* Right Panel — 35% */}
+      <div className="w-full lg:w-[35%] lg:min-h-0 min-h-[480px] flex flex-col">
+        <CustomerChat ref={chatRef} className="flex-1" />
       </div>
     </div>
   )

@@ -1,14 +1,15 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Geist, Geist_Mono, Playfair_Display } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
+const _playfair = Playfair_Display({ subsets: ["latin"], weight: ['400', '500', '600', '700'] });
 
 export const metadata: Metadata = {
-  title: 'SmartMenu - Golden Dragon Restaurant AI Assistant',
-  description: 'AI-powered restaurant menu management system',
+  title: 'SmartMenu - Jade Palace Restaurant AI Assistant',
+  description: 'AI-powered menu experience - Where Tradition Meets Innovation',
   generator: 'v0.app',
   icons: {
     icon: [

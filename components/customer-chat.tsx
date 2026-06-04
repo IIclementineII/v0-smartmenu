@@ -37,13 +37,13 @@ function formatTime(date: Date): string {
 function TypingIndicator() {
   return (
     <div className="flex gap-3 justify-start">
-      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center flex-shrink-0 shadow-md">
+      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-md">
         <Sparkles className="h-3.5 w-3.5 text-white" />
       </div>
-      <div className="bg-slate-700 rounded-2xl px-3 py-2.5 flex items-center gap-1">
-        <span className="w-1.5 h-1.5 bg-amber-400 rounded-full animate-bounce-dot-1" />
-        <span className="w-1.5 h-1.5 bg-amber-400 rounded-full animate-bounce-dot-2" />
-        <span className="w-1.5 h-1.5 bg-amber-400 rounded-full animate-bounce-dot-3" />
+      <div className="bg-emerald-100 rounded-2xl px-3 py-2.5 flex items-center gap-1">
+        <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce-dot-1" />
+        <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce-dot-2" />
+        <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce-dot-3" />
       </div>
     </div>
   )
@@ -128,32 +128,32 @@ export const CustomerChat = forwardRef<CustomerChatHandle, CustomerChatProps>(
     }
 
     return (
-      <div className={`flex flex-col rounded-2xl overflow-hidden shadow-xl border border-slate-700/50 ${className}`}>
+      <div className={`flex flex-col rounded-2xl overflow-hidden shadow-xl border border-emerald-200 ${className}`}>
         {/* Header */}
-        <div className="p-3 bg-slate-900 border-b border-slate-700 flex-shrink-0">
+        <div className="p-3 bg-white border-b border-emerald-100 flex-shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/30">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
               <Sparkles className="h-4 w-4 text-white" />
             </div>
             <div>
-              <h2 className="font-semibold text-white text-sm">Jade Palace AI</h2>
-              <p className="text-[11px] text-slate-400">Your personal menu assistant</p>
+              <h2 className="font-semibold text-emerald-800 text-sm">Jade Palace AI</h2>
+              <p className="text-[11px] text-gray-500">Your personal menu assistant</p>
             </div>
-            <span className="ml-auto flex items-center gap-1 text-[10px] text-emerald-400 font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="ml-auto flex items-center gap-1 text-[10px] text-emerald-600 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
               Online
             </span>
           </div>
         </div>
 
         {/* Messages */}
-        <ScrollArea className="flex-1 p-3 bg-slate-900" ref={scrollRef}>
+        <ScrollArea className="flex-1 p-3 bg-emerald-50/50" ref={scrollRef}>
           <div className="space-y-3">
             {messages.map(message => (
               <div key={message.id}>
                 <div className={`flex gap-2 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   {message.role === 'assistant' && (
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center flex-shrink-0 shadow-md mt-0.5">
+                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-md mt-0.5">
                       <Sparkles className="h-3.5 w-3.5 text-white" />
                     </div>
                   )}
@@ -161,7 +161,7 @@ export const CustomerChat = forwardRef<CustomerChatHandle, CustomerChatProps>(
                     className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${
                       message.role === 'user'
                         ? 'bg-emerald-600 text-white rounded-tr-sm'
-                        : 'bg-slate-700 text-slate-100 rounded-tl-sm'
+                        : 'bg-emerald-100 text-emerald-900 rounded-tl-sm'
                     }`}
                   >
                     <p className="whitespace-pre-line leading-relaxed">{message.content}</p>
@@ -173,7 +173,7 @@ export const CustomerChat = forwardRef<CustomerChatHandle, CustomerChatProps>(
                   )}
                 </div>
                 <p
-                  className={`text-[10px] text-slate-500 mt-1 ${message.role === 'user' ? 'text-right mr-9' : 'ml-9'}`}
+                  className={`text-[10px] text-gray-500 mt-1 ${message.role === 'user' ? 'text-right mr-9' : 'ml-9'}`}
                   suppressHydrationWarning
                 >
                   {formatTime(message.timestamp)}
@@ -185,17 +185,17 @@ export const CustomerChat = forwardRef<CustomerChatHandle, CustomerChatProps>(
         </ScrollArea>
 
         {error && (
-          <div className="px-3 py-1.5 bg-red-900/50 text-red-300 text-xs flex-shrink-0">{error}</div>
+          <div className="px-3 py-1.5 bg-red-50 text-red-600 text-xs flex-shrink-0 border-t border-red-100">{error}</div>
         )}
 
         {/* Quick-reply chips */}
-        <div className="px-3 pt-2 pb-0 bg-slate-800 flex gap-1.5 flex-wrap flex-shrink-0">
+        <div className="px-3 pt-2 pb-0 bg-white flex gap-1.5 flex-wrap flex-shrink-0 border-t border-emerald-100">
           {QUICK_REPLIES.map(chip => (
             <button
               key={chip}
               onClick={() => send(chip)}
               disabled={isLoading}
-              className="text-[11px] px-2.5 py-1 rounded-full border border-emerald-600/50 text-emerald-300 bg-emerald-900/30 hover:bg-emerald-700/40 transition-colors duration-150 disabled:opacity-40"
+              className="text-[11px] px-2.5 py-1 rounded-full border border-emerald-300 text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-colors duration-150 disabled:opacity-40"
             >
               {chip}
             </button>
@@ -203,12 +203,12 @@ export const CustomerChat = forwardRef<CustomerChatHandle, CustomerChatProps>(
         </div>
 
         {/* Input */}
-        <form onSubmit={handleSubmit} className="p-3 bg-slate-800 border-t border-slate-700 flex gap-2 flex-shrink-0">
+        <form onSubmit={handleSubmit} className="p-3 bg-white border-t border-emerald-100 flex gap-2 flex-shrink-0">
           <Input
             value={input}
             onChange={e => setInput(e.target.value)}
             placeholder="Ask about our menu..."
-            className="flex-1 bg-slate-700 border-slate-600 text-white text-sm placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500 h-8"
+            className="flex-1 bg-white border-emerald-200 text-emerald-900 text-sm placeholder:text-gray-400 focus:border-emerald-500 focus:ring-emerald-500 h-8"
             disabled={isLoading}
           />
           <Button

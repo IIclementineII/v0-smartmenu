@@ -55,19 +55,9 @@ function TypewriterTagline() {
 function HeroTitle() {
   return (
     <h1 
-      className="font-serif text-3xl sm:text-4xl md:text-5xl font-semibold mb-2 tracking-tight text-balance animate-fade-in" 
+      className="hero-title font-serif text-3xl sm:text-4xl md:text-5xl font-semibold mb-2 tracking-tight text-balance animate-fade-in" 
       style={{ 
-        background: 'linear-gradient(90deg, #ffffff 0%, #ffffff 40%, #F0C040 50%, #ffffff 60%, #ffffff 100%)',
-        backgroundSize: '200% 100%',
-        WebkitBackgroundClip: 'text',
-        backgroundClip: 'text',
-        color: 'transparent',
-        WebkitTextFillColor: 'transparent',
-        animation: 'title-shimmer 3s infinite linear',
         display: 'inline-block',
-        padding: '0 8px',
-        paddingLeft: '8px',
-        paddingRight: '8px',
       }}
     >
       Jade Palace Restaurant

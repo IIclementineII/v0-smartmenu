@@ -222,6 +222,10 @@
   -webkit-background-clip: text;
   color: transparent;
   animation: title-shimmer 3s infinite linear;
+  padding-left: 12px;
+  padding-right: 12px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 
 /* ── Logo icon - STATIC, no hover effects ────────── */

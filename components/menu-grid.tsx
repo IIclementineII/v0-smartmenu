@@ -135,7 +135,7 @@ export function MenuGrid({ items, onAddToInquiry }: MenuGridProps) {
   return (
     <div className="space-y-6">
       {/* Today's Specials */}
-      <div className="relative">
+      <div style={{ overflow: 'hidden', width: '100%' }}>
         <div className="flex items-center gap-2 mb-3">
           <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
           <h3 className="font-semibold text-foreground text-sm tracking-wide uppercase">Today&apos;s Specials</h3>
@@ -145,7 +145,9 @@ export function MenuGrid({ items, onAddToInquiry }: MenuGridProps) {
           style={{ 
             overflowX: 'auto', 
             overflowY: 'visible',
+            width: '100%',
             maxWidth: '100%',
+            boxSizing: 'border-box',
           }}
         >
           {specials.map(item => (

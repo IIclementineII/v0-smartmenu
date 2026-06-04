@@ -28,6 +28,38 @@ function formatTime(d: Date) {
   return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
 }
 
+// Simple markdown renderer for AI responses
+function renderMarkdown(text: string): React.ReactNode {
+  const lines = text.split('\n')
+  const elements: React.ReactNode[] = []
+  
+  lines.forEach((line, idx) => {
+    let processed = line.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    
+    if (line.trim().startsWith('* ') || line.trim().startsWith('- ') || line.trim().startsWith('• ')) {
+      const bulletContent = line.trim().replace(/^[\*\-•]\s*/, '')
+      const processedBullet = bulletContent.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      elements.push(
+        <div key={idx} className="flex gap-2 ml-2">
+          <span>•</span>
+          <span dangerouslySetInnerHTML={{ __html: processedBullet }} />
+        </div>
+      )
+    } else if (line.trim() === '') {
+      elements.push(<br key={idx} />)
+    } else {
+      elements.push(
+        <span key={idx}>
+          <span dangerouslySetInnerHTML={{ __html: processed }} />
+          {idx < lines.length - 1 && <br />}
+        </span>
+      )
+    }
+  })
+  
+  return <>{elements}</>
+}
+
 function TypingIndicator() {
   return (
   <div className="flex gap-2 justify-start">
@@ -160,11 +192,11 @@ export function OwnerDashboard() {
       })
       if (!res.ok) throw new Error(`API ${res.status}`)
       const data = await res.json()
-      setMessages(prev => [...prev, {
-        id: (Date.now() + 1).toString(), role: 'assistant',
-        content: data.response || data.message || 'Command received.',
-        timestamp: new Date(),
-      }])
+  setMessages(prev => [...prev, {
+  id: (Date.now() + 1).toString(), role: 'assistant',
+  content: data.reply || 'Command received.',
+  timestamp: new Date(),
+  }])
     } catch {
       setError('Failed to process command. Please try again.')
       setMessages(prev => [...prev, {
@@ -491,10 +523,10 @@ export function OwnerDashboard() {
                       </div>
                     )}
                     <div className={`max-w-[80%] rounded-xl px-3 py-2 text-sm leading-relaxed ${
-                      message.role === 'user' ? 'bg-emerald-600 text-white rounded-tr-sm' : 'bg-emerald-100 text-emerald-900 rounded-tl-sm'
-                    }`}>
-                      <p className="whitespace-pre-line">{message.content}</p>
-                    </div>
+  message.role === 'user' ? 'bg-emerald-600 text-white rounded-tr-sm' : 'bg-emerald-100 text-emerald-900 rounded-tl-sm'
+  }`}>
+  <div className="leading-relaxed">{renderMarkdown(message.content)}</div>
+  </div>
                     {message.role === 'user' && (
                       <div className="w-7 h-7 rounded-full bg-emerald-700 flex items-center justify-center flex-shrink-0 mt-0.5">
                         <User className="h-3.5 w-3.5 text-white" />

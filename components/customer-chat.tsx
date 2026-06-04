@@ -219,9 +219,12 @@ export const CustomerChat = forwardRef<CustomerChatHandle, CustomerChatProps>(
     const suggestionChips = getSuggestionChips(messages)
 
     return (
-      <div className={`flex flex-col rounded-2xl overflow-hidden shadow-xl border border-emerald-200 ${className}`}>
+      <div 
+        className={`flex flex-col rounded-2xl overflow-hidden shadow-xl border border-emerald-200 ${className}`}
+        style={{ height: 'calc(100vh - 200px)', maxHeight: '600px' }}
+      >
         {/* Header */}
-        <div className="p-3 bg-white border-b border-emerald-100 flex-shrink-0">
+        <div className="p-3 bg-white border-b border-emerald-100 flex-shrink-0" style={{ height: '56px' }}>
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
               <Sparkles className="h-4 w-4 text-white" />
@@ -238,7 +241,11 @@ export const CustomerChat = forwardRef<CustomerChatHandle, CustomerChatProps>(
         </div>
 
         {/* Messages */}
-        <ScrollArea className="flex-1 p-3 bg-emerald-50/50" ref={scrollRef}>
+        <ScrollArea 
+          className="p-3 bg-emerald-50/50" 
+          ref={scrollRef}
+          style={{ flex: 1, height: 0, overflowY: 'auto' }}
+        >
           <div className="space-y-3">
             {messages.map((message, index) => {
               const isLastAssistantMessage = message.role === 'assistant' && 
@@ -295,7 +302,7 @@ export const CustomerChat = forwardRef<CustomerChatHandle, CustomerChatProps>(
         )}
 
         {/* Quick-reply chips */}
-        <div className="px-3 pt-2 pb-0 bg-white flex gap-1.5 flex-wrap flex-shrink-0 border-t border-emerald-100">
+        <div className="px-3 pt-2 pb-0 bg-white flex gap-1.5 flex-wrap flex-shrink-0 border-t border-emerald-100" style={{ minHeight: '36px' }}>
           {QUICK_REPLIES.map(chip => (
             <button
               key={chip}
@@ -309,7 +316,7 @@ export const CustomerChat = forwardRef<CustomerChatHandle, CustomerChatProps>(
         </div>
 
         {/* Input */}
-        <form onSubmit={handleSubmit} className="p-3 bg-white border-t border-emerald-100 flex gap-2 flex-shrink-0">
+        <form onSubmit={handleSubmit} className="p-3 bg-white border-t border-emerald-100 flex gap-2 flex-shrink-0" style={{ height: '56px' }}>
           <Input
             value={input}
             onChange={e => setInput(e.target.value)}

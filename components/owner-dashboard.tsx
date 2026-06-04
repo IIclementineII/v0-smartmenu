@@ -454,27 +454,33 @@ export function OwnerDashboard() {
       )}
 
       {/* Slide-in Drawer */}
-      <div className={`fixed top-0 right-0 h-full w-[400px] max-w-full bg-white z-50 shadow-2xl transform transition-transform duration-300 ease-out ${drawerOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-        <div className="flex flex-col h-full">
-          {/* Drawer Header */}
-          <div className="px-4 py-4 border-b border-emerald-100 flex items-center gap-3 bg-white">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-md">
-              <Sparkles className="h-5 w-5 text-white" />
-            </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-emerald-800">AI Menu Assistant</h3>
-              <span className="text-xs text-gray-500">Manage your menu with natural language</span>
-            </div>
-            <button
-              onClick={() => setDrawerOpen(false)}
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-emerald-700 hover:bg-emerald-50 transition-colors"
-            >
-              <X className="h-4 w-4" />
-            </button>
+      <div 
+        className={`fixed top-0 right-0 w-[400px] max-w-full bg-white z-50 shadow-2xl transform transition-transform duration-300 ease-out ${drawerOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}
+      >
+        {/* Drawer Header */}
+        <div className="px-4 py-4 border-b border-emerald-100 flex items-center gap-3 bg-white flex-shrink-0" style={{ height: '70px' }}>
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-md">
+            <Sparkles className="h-5 w-5 text-white" />
           </div>
+          <div className="flex-1">
+            <h3 className="font-semibold text-emerald-800">AI Menu Assistant</h3>
+            <span className="text-xs text-gray-500">Manage your menu with natural language</span>
+          </div>
+          <button
+            onClick={() => setDrawerOpen(false)}
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-emerald-700 hover:bg-emerald-50 transition-colors"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
 
-          {/* Messages */}
-          <ScrollArea className="flex-1 p-4 bg-emerald-50/50" ref={scrollRef}>
+        {/* Messages */}
+        <ScrollArea 
+          className="p-4 bg-emerald-50/50" 
+          ref={scrollRef}
+          style={{ flex: 1, height: 0, overflowY: 'auto' }}
+        >
             <div className="space-y-3">
               {messages.map(message => (
                 <div key={message.id}>
@@ -507,10 +513,10 @@ export function OwnerDashboard() {
             </div>
           </ScrollArea>
 
-          {error && <div className="px-4 py-2 bg-red-50 text-red-600 text-xs border-t border-red-100">{error}</div>}
+          {error && <div className="px-4 py-2 bg-red-50 text-red-600 text-xs border-t border-red-100 flex-shrink-0">{error}</div>}
 
           {/* Input */}
-          <form onSubmit={handleChatSubmit} className="flex gap-2 p-4 border-t border-emerald-100 bg-white">
+          <form onSubmit={handleChatSubmit} className="flex gap-2 p-4 border-t border-emerald-100 bg-white flex-shrink-0" style={{ height: '60px' }}>
             <Input
               value={chatInput}
               onChange={e => setChatInput(e.target.value)}

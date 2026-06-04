@@ -140,9 +140,14 @@ export const CustomerChat = forwardRef<CustomerChatHandle, CustomerChatProps>(
     const [input, setInput] = useState('')
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
-    const [currentChips, setCurrentChips] = useState<string[]>(() => getRandomChips([]))
+    const [currentChips, setCurrentChips] = useState<string[]>([])
     const scrollRef = useRef<HTMLDivElement>(null)
     const sessionId = useRef(`session-${Date.now()}`)
+
+    // Initialize chips on client only to avoid hydration mismatch
+    useEffect(() => {
+      setCurrentChips(getRandomChips([]))
+    }, [])
 
     useEffect(() => {
       if (scrollRef.current) {
@@ -274,7 +279,7 @@ export const CustomerChat = forwardRef<CustomerChatHandle, CustomerChatProps>(
                     {formatTime(message.timestamp)}
                   </p>
                   {/* Smart suggestion chips after assistant messages */}
-                  {showSuggestions && (
+                  {showSuggestions && currentChips.length > 0 && (
                     <SuggestionChips 
                       chips={currentChips} 
                       onChipClick={send} 

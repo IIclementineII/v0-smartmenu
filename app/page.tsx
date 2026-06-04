@@ -73,13 +73,28 @@ function HeroTitle() {
 }
 
 function FloatingParticles() {
-  const particles = Array.from({ length: 15 }, (_, i) => ({
-    id: i,
-    left: `${Math.random() * 100}%`,
-    top: `${Math.random() * 100}%`,
-    delay: `${Math.random() * 4}s`,
-    size: Math.random() * 3 + 2,
-  }))
+  const [particles, setParticles] = useState<Array<{
+    id: number
+    left: string
+    top: string
+    delay: string
+    size: number
+  }>>([])
+
+  useEffect(() => {
+    // Generate particles only on client to avoid hydration mismatch
+    setParticles(
+      Array.from({ length: 15 }, (_, i) => ({
+        id: i,
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        delay: `${Math.random() * 4}s`,
+        size: Math.random() * 3 + 2,
+      }))
+    )
+  }, [])
+
+  if (particles.length === 0) return null
 
   return (
     <>

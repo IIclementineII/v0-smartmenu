@@ -120,6 +120,9 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     @apply bg-background text-foreground;
   }
@@ -162,6 +165,20 @@
 /* ── Sliding tab indicator ───────────────────────── */
 .tab-indicator {
   position: relative;
+  overflow: hidden;
+}
+.tab-indicator::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(16, 185, 129, 0.1);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  z-index: 0;
+  border-radius: inherit;
+}
+.tab-indicator:hover::before {
+  transform: translateX(0);
 }
 .tab-indicator::after {
   content: '';
@@ -189,4 +206,169 @@
 .glass-jade:hover {
   background: rgba(16, 185, 129, 0.14);
   border-color: rgba(16, 185, 129, 0.38);
+}
+
+/* ── Hero word glow on hover ─────────────────────── */
+.hero-word {
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+.hero-word:hover {
+  text-shadow: 0 0 20px rgba(217, 119, 6, 0.6), 0 0 40px rgba(217, 119, 6, 0.3);
+  transform: scale(1.05);
+}
+
+/* ── Logo rotate on hover ────────────────────────── */
+.logo-spin {
+  transition: transform 2s ease;
+}
+.logo-spin:hover {
+  transform: rotate(360deg);
+}
+
+/* ── Shimmer text animation ──────────────────────── */
+@keyframes shimmer-wave {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.shimmer-text {
+  background: linear-gradient(
+    90deg,
+    rgba(217, 119, 6, 0) 0%,
+    rgba(217, 119, 6, 0.8) 50%,
+    rgba(217, 119, 6, 0) 100%
+  );
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  transition: all 0.3s ease;
+}
+.shimmer-text:hover {
+  animation: shimmer-wave 1.5s ease infinite;
+  color: transparent;
+  background-color: #d97706;
+}
+
+/* ── Button ripple effect ────────────────────────── */
+.btn-ripple {
+  position: relative;
+  overflow: hidden;
+}
+.btn-ripple::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+  transform: scale(0);
+  opacity: 0;
+  transition: transform 0.5s ease, opacity 0.3s ease;
+}
+.btn-ripple:hover::after {
+  transform: scale(2);
+  opacity: 1;
+}
+.btn-ripple:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 40px rgba(217, 119, 6, 0.5), 0 0 20px rgba(217, 119, 6, 0.3);
+}
+
+/* ── Floating particles ──────────────────────────── */
+@keyframes float-particle {
+  0%, 100% { 
+    transform: translateY(0) translateX(0); 
+    opacity: 0.3;
+  }
+  50% { 
+    transform: translateY(-20px) translateX(10px); 
+    opacity: 0.6;
+  }
+}
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: float-particle 4s ease-in-out infinite;
+}
+
+/* ── Animated gradient border ────────────────────── */
+@keyframes gradient-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.gradient-border-bottom {
+  position: relative;
+}
+.gradient-border-bottom::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #10b981, #d97706, #10b981);
+  background-size: 200% 100%;
+  animation: gradient-flow 3s ease infinite;
+}
+
+/* ── Badge shine effect ──────────────────────────── */
+@keyframes badge-shine {
+  0% { background-position: -100% 0; }
+  100% { background-position: 200% 0; }
+}
+.badge-shine {
+  position: relative;
+  overflow: hidden;
+}
+.badge-shine::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: badge-shine 2s ease-in-out infinite;
+}
+
+/* ── Dish card enhanced hover ────────────────────── */
+.dish-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.dish-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(16, 185, 129, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* ── Quick info overlay ──────────────────────────── */
+.dish-card .quick-info {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+}
+.dish-card:hover .quick-info {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Back to top button ──────────────────────────── */
+.back-to-top {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+}
+.back-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }

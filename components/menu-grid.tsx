@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { MenuItem } from '@/lib/menu-data'
-import { Flame, Leaf, Bird, IceCream, Star, MessageSquarePlus } from 'lucide-react'
+import { Flame, Leaf, Bird, IceCream, Star, MessageSquarePlus, Clock } from 'lucide-react'
 
 interface MenuGridProps {
   items: MenuItem[]
@@ -15,12 +15,17 @@ type Filter = 'All' | 'Vegetarian' | 'Spicy' | 'Under $15'
 
 const FILTERS: { key: Filter; label: string }[] = [
   { key: 'All', label: 'All' },
-  { key: 'Vegetarian', label: 'Vegetarian 🌱' },
-  { key: 'Spicy', label: 'Spicy 🌶️' },
-  { key: 'Under $15', label: 'Under $15 💰' },
+  { key: 'Vegetarian', label: 'Vegetarian' },
+  { key: 'Spicy', label: 'Spicy' },
+  { key: 'Under $15', label: 'Under $15' },
 ]
 const SPECIALS_IDS = ['1', '4', '7'] // Kung Pao Chicken, Peking Duck, Buddha Delight
 const TODAYS_SPECIAL_ID = '4' // Peking Duck
+
+// Prep times for dishes (in minutes)
+const PREP_TIMES: Record<string, number> = {
+  '1': 15, '2': 12, '3': 8, '4': 25, '5': 5, '6': 5, '7': 18, '8': 10,
+}
 
 function getCategoryIcon(item: MenuItem) {
   if (item.category === 'Dessert') return <IceCream className="h-5 w-5" />
@@ -48,17 +53,18 @@ function DishCard({
   onAddToInquiry?: (item: MenuItem) => void
 }) {
   const isTodaysSpecial = item.id === TODAYS_SPECIAL_ID
+  const prepTime = PREP_TIMES[item.id] || 15
   
   return (
     <div
-      className="glass-jade rounded-2xl overflow-hidden group cursor-default transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 fade-up relative"
+      className="dish-card glass-jade rounded-2xl overflow-hidden group cursor-default fade-up relative"
       style={{ animationDelay: `${index * 60}ms` }}
     >
-      {/* Today's Special Badge */}
+      {/* Today's Special Badge with shine */}
       {isTodaysSpecial && (
         <div className="absolute top-2 right-2 z-10">
-          <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 text-[10px] px-2 py-0.5 shadow-md animate-pulse">
-            ⭐ Today&apos;s Special
+          <Badge className="badge-shine bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 text-[10px] px-2 py-0.5 shadow-md">
+            Today&apos;s Special
           </Badge>
         </div>
       )}
@@ -104,6 +110,14 @@ function DishCard({
             Ask
           </Button>
         </div>
+
+        {/* Quick info overlay on hover */}
+        <div className="quick-info mt-2 pt-2 border-t border-emerald-100/50">
+          <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+            <Clock className="h-3 w-3" />
+            <span>{prepTime} min prep time</span>
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -134,7 +148,7 @@ export function MenuGrid({ items, onAddToInquiry }: MenuGridProps) {
           {specials.map(item => (
             <div
               key={item.id}
-              className="flex-shrink-0 w-44 glass-jade rounded-xl p-3 flex flex-col gap-1.5 hover:shadow-md transition-shadow duration-200"
+              className="flex-shrink-0 w-44 glass-jade rounded-xl p-3 flex flex-col gap-1.5 hover:shadow-md transition-all duration-300 hover:-translate-y-1"
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-foreground leading-tight line-clamp-1">{item.name}</span>
@@ -160,7 +174,7 @@ export function MenuGrid({ items, onAddToInquiry }: MenuGridProps) {
               className={`text-xs px-3 py-1.5 rounded-full border font-medium transition-all duration-200 ${
                 activeFilter === f.key
                   ? 'bg-emerald-600 border-emerald-600 text-white shadow-sm'
-                  : 'bg-white/60 border-emerald-200 text-emerald-700 hover:bg-emerald-50'
+                  : 'bg-white/60 border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300'
               }`}
             >
               {f.label}

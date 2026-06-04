@@ -122,6 +122,7 @@ export default function SmartMenuPage() {
   }
 
   return (
+    <div style={{ overflowX: 'hidden', width: '100%', maxWidth: '100vw' }}>
     <div className="min-h-screen bg-background">
       {/* Hero */}
       <section className="relative h-[320px] overflow-hidden gradient-border-bottom">
@@ -206,6 +207,7 @@ export default function SmartMenuPage() {
 
       {/* Back to Top */}
       <BackToTopButton />
+    </div>
     </div>
   )
 }

@@ -55,7 +55,7 @@ function TypewriterTagline() {
 function HeroTitle() {
   return (
     <h1 className="hero-title" style={{
-      fontFamily: 'Georgia, serif',
+      fontFamily: "'Playfair Display', serif",
       fontSize: 'clamp(2rem, 5vw, 3.5rem)',
       fontWeight: 'bold',
       textAlign: 'center',
@@ -65,11 +65,11 @@ function HeroTitle() {
       lineHeight: '1.2',
       overflow: 'visible',
       background: 'linear-gradient(90deg, #ffffff 0%, #ffffff 35%, #F0C040 50%, #ffffff 65%, #ffffff 100%)',
-      backgroundSize: '200% 100%',
+      backgroundSize: '300% 100%',
       WebkitBackgroundClip: 'text',
       backgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
-      animation: 'shimmer 5s infinite linear'
+      animation: 'shimmer 6s infinite linear'
     }}>
       Jade Palace Restaurant
     </h1>

@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
@@ -212,8 +213,8 @@
 
 /* ── Hero title shimmer animation ────────────────── */
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
 }
 
 /* ── Logo icon - STATIC, no hover effects ────────── */

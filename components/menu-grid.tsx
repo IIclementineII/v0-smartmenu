@@ -10,13 +10,16 @@ interface MenuGridProps {
   onAddToInquiry?: (item: MenuItem) => void
 }
 
-type Filter = 'All' | 'Vegetarian' | 'Spicy' | 'Under $15'
+type Filter = 'All' | 'Vegetarian' | 'Spicy' | 'Under $15' | 'Quick' | 'Premium' | 'No Allergens'
 
 const FILTERS: { key: Filter; label: string }[] = [
   { key: 'All', label: 'All' },
   { key: 'Vegetarian', label: 'Vegetarian' },
   { key: 'Spicy', label: 'Spicy' },
   { key: 'Under $15', label: 'Under $15' },
+  { key: 'Quick', label: 'Quick \u26A1' },
+  { key: 'Premium', label: 'Premium \uD83D\uDC51' },
+  { key: 'No Allergens', label: 'No Allergens \uD83C\uDF3F' },
 ]
 const SPECIALS_IDS = ['1', '4', '7'] // Kung Pao Chicken, Peking Duck, Buddha Delight
 const TODAYS_SPECIAL_ID = '4' // Peking Duck
@@ -125,10 +128,14 @@ export function MenuGrid({ items, onAddToInquiry }: MenuGridProps) {
   const specials = items.filter(i => SPECIALS_IDS.includes(i.id))
 
   const filtered = items.filter(item => {
+    const prepTime = PREP_TIMES[item.id] || 15
     if (activeFilter === 'All') return true
     if (activeFilter === 'Vegetarian') return item.isVegetarian
     if (activeFilter === 'Spicy') return item.isSpicy
     if (activeFilter === 'Under $15') return item.price < 15
+    if (activeFilter === 'Quick') return prepTime <= 10
+    if (activeFilter === 'Premium') return item.price >= 15
+    if (activeFilter === 'No Allergens') return !item.allergens || item.allergens.length === 0
     return true
   })
 

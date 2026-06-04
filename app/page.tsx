@@ -193,12 +193,12 @@ export default function SmartMenuPage() {
             </TabsTrigger>
             <TabsTrigger
               value="owner"
-              className="gap-2 tab-indicator data-[state=active]:bg-emerald-600 data-[state=active]:text-white transition-colors duration-200 relative z-10 pr-6"
+              className="gap-2 tab-indicator data-[state=active]:bg-emerald-600 data-[state=active]:text-white transition-colors duration-200 relative z-10 whitespace-nowrap min-w-fit"
             >
               <LayoutDashboard className="h-4 w-4" />
-              Owner Dashboard
-              {/* Notification dot - positioned inside tab at top-right */}
-              <span className="absolute top-1 right-1.5 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+              <span>Owner Dashboard</span>
+              {/* Notification dot - small 8px circle at top-right corner */}
+              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full animate-pulse ring-2 ring-white" />
             </TabsTrigger>
           </TabsList>
 

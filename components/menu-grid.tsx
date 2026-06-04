@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { MenuItem } from '@/lib/menu-data'
 import { Flame, Leaf, Bird, IceCream, Star, MessageSquarePlus, Clock } from 'lucide-react'
 
@@ -77,7 +76,7 @@ function DishCard({
       </div>
 
       {/* Body */}
-      <div className="p-3 pb-4">
+      <div className="p-3 pb-10">
         <div className="flex items-start justify-between gap-1 mb-1">
           <h3 className="font-semibold text-foreground text-sm leading-tight">{item.name}</h3>
           <span className="text-amber-600 font-bold text-sm whitespace-nowrap">${item.price.toFixed(2)}</span>
@@ -85,37 +84,36 @@ function DishCard({
 
         <p className="text-xs text-muted-foreground mb-2 line-clamp-2 leading-relaxed">{item.description}</p>
 
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex gap-1 flex-wrap">
-            {item.isVegetarian && (
-              <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 text-[10px] px-1.5 py-0 h-4">
-                <Leaf className="h-2.5 w-2.5 mr-0.5" />Veg
-              </Badge>
-            )}
-            {item.isSpicy && (
-              <Badge className="bg-red-100 text-red-700 border-red-200 text-[10px] px-1.5 py-0 h-4">
-                <Flame className="h-2.5 w-2.5 mr-0.5" />Spicy
-              </Badge>
-            )}
-          </div>
-
-          {/* Hover button */}
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => onAddToInquiry?.(item)}
-            className="h-6 px-2 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800 gap-0.5"
-          >
-            <MessageSquarePlus className="h-3 w-3" />
-            Ask
-          </Button>
+        <div className="flex items-center gap-1 flex-wrap">
+          {item.isVegetarian && (
+            <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 text-[10px] px-1.5 py-0 h-4">
+              <Leaf className="h-2.5 w-2.5 mr-0.5" />Veg
+            </Badge>
+          )}
+          {item.isSpicy && (
+            <Badge className="bg-red-100 text-red-700 border-red-200 text-[10px] px-1.5 py-0 h-4">
+              <Flame className="h-2.5 w-2.5 mr-0.5" />Spicy
+            </Badge>
+          )}
         </div>
       </div>
 
-      {/* Quick info overlay - slides up from bottom */}
-      <div className="quick-info flex items-center gap-1.5 text-white text-[11px] rounded-b-2xl">
-        <Clock className="h-3.5 w-3.5" />
-        <span>{prepTime} min</span>
+      {/* Quick info overlay - slides up from bottom with prep time LEFT and Ask button RIGHT */}
+      <div className="quick-info flex items-center justify-between text-white text-[11px] rounded-b-2xl">
+        <div className="flex items-center gap-1.5">
+          <Clock className="h-3.5 w-3.5" />
+          <span>{prepTime} min</span>
+        </div>
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            onAddToInquiry?.(item)
+          }}
+          className="flex items-center gap-1 px-2 py-0.5 bg-emerald-600 hover:bg-emerald-500 rounded text-white text-[10px] font-medium transition-colors"
+        >
+          <MessageSquarePlus className="h-3 w-3" />
+          Ask AI
+        </button>
       </div>
     </div>
   )

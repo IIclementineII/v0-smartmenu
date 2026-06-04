@@ -55,7 +55,7 @@ function TypewriterTagline() {
 function HeroTitle() {
   return (
     <h1 
-      className="font-serif text-3xl sm:text-4xl md:text-5xl font-semibold mb-2 tracking-tight text-balance animate-fade-in px-4" 
+      className="font-serif text-3xl sm:text-4xl md:text-5xl font-semibold mb-2 tracking-tight text-balance animate-fade-in" 
       style={{ 
         background: 'linear-gradient(90deg, #ffffff 0%, #ffffff 40%, #F0C040 50%, #ffffff 60%, #ffffff 100%)',
         backgroundSize: '200% 100%',
@@ -64,6 +64,10 @@ function HeroTitle() {
         color: 'transparent',
         WebkitTextFillColor: 'transparent',
         animation: 'title-shimmer 3s infinite linear',
+        width: '100%',
+        textAlign: 'center',
+        overflow: 'visible',
+        display: 'block',
       }}
     >
       Jade Palace Restaurant
@@ -131,7 +135,7 @@ export default function SmartMenuPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
       {/* Hero */}
       <section className="relative h-[320px] overflow-hidden gradient-border-bottom">
         <div className="absolute inset-0 bg-gradient-to-br from-[#0D2B2B] via-emerald-950 to-black" />
@@ -142,7 +146,7 @@ export default function SmartMenuPage() {
         {/* Floating particles */}
         <FloatingParticles />
 
-        <div className="relative z-10 h-full flex flex-col items-center justify-center px-4 text-center py-6">
+        <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center py-6" style={{ width: '100%' }}>
           {/* Elegant Jade Logo with golden border */}
           <div 
             className="logo-icon mb-4 w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center shadow-lg shadow-emerald-500/30 fade-up cursor-pointer ring-2 ring-amber-500/60" 

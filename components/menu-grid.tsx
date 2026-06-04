@@ -11,10 +11,16 @@ interface MenuGridProps {
   onAddToInquiry?: (item: MenuItem) => void
 }
 
-type Filter = 'All' | 'Vegetarian' | 'Spicy' | 'Allergen-Free'
+type Filter = 'All' | 'Vegetarian' | 'Spicy' | 'Under $15'
 
-const FILTERS: Filter[] = ['All', 'Vegetarian', 'Spicy', 'Allergen-Free']
+const FILTERS: { key: Filter; label: string }[] = [
+  { key: 'All', label: 'All' },
+  { key: 'Vegetarian', label: 'Vegetarian 🌱' },
+  { key: 'Spicy', label: 'Spicy 🌶️' },
+  { key: 'Under $15', label: 'Under $15 💰' },
+]
 const SPECIALS_IDS = ['1', '4', '7'] // Kung Pao Chicken, Peking Duck, Buddha Delight
+const TODAYS_SPECIAL_ID = '4' // Peking Duck
 
 function getCategoryIcon(item: MenuItem) {
   if (item.category === 'Dessert') return <IceCream className="h-5 w-5" />
@@ -41,11 +47,22 @@ function DishCard({
   index: number
   onAddToInquiry?: (item: MenuItem) => void
 }) {
+  const isTodaysSpecial = item.id === TODAYS_SPECIAL_ID
+  
   return (
     <div
       className="glass-jade rounded-2xl overflow-hidden group cursor-default transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 fade-up relative"
       style={{ animationDelay: `${index * 60}ms` }}
     >
+      {/* Today's Special Badge */}
+      {isTodaysSpecial && (
+        <div className="absolute top-2 right-2 z-10">
+          <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 text-[10px] px-2 py-0.5 shadow-md animate-pulse">
+            ⭐ Today&apos;s Special
+          </Badge>
+        </div>
+      )}
+      
       {/* Icon strip */}
       <div className={`h-14 bg-gradient-to-br ${getIconBg(item)} flex items-center justify-center relative overflow-hidden`}>
         <div className="text-white/90">{getCategoryIcon(item)}</div>
@@ -101,7 +118,7 @@ export function MenuGrid({ items, onAddToInquiry }: MenuGridProps) {
     if (activeFilter === 'All') return true
     if (activeFilter === 'Vegetarian') return item.isVegetarian
     if (activeFilter === 'Spicy') return item.isSpicy
-    if (activeFilter === 'Allergen-Free') return item.allergens.length === 0
+    if (activeFilter === 'Under $15') return item.price < 15
     return true
   })
 
@@ -138,15 +155,15 @@ export function MenuGrid({ items, onAddToInquiry }: MenuGridProps) {
         <div className="flex gap-2 flex-wrap">
           {FILTERS.map(f => (
             <button
-              key={f}
-              onClick={() => setActiveFilter(f)}
+              key={f.key}
+              onClick={() => setActiveFilter(f.key)}
               className={`text-xs px-3 py-1.5 rounded-full border font-medium transition-all duration-200 ${
-                activeFilter === f
+                activeFilter === f.key
                   ? 'bg-emerald-600 border-emerald-600 text-white shadow-sm'
                   : 'bg-white/60 border-emerald-200 text-emerald-700 hover:bg-emerald-50'
               }`}
             >
-              {f}
+              {f.label}
             </button>
           ))}
         </div>

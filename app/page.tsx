@@ -12,25 +12,42 @@ const TAGLINE = 'Where Tradition Meets Innovation'
 
 function TypewriterTagline() {
   const [displayed, setDisplayed] = useState('')
-  const [done, setDone] = useState(false)
+  const [phase, setPhase] = useState<'typing' | 'pause' | 'deleting' | 'pauseEmpty'>('typing')
 
   useEffect(() => {
-    let i = 0
-    const timer = setInterval(() => {
-      i++
-      setDisplayed(TAGLINE.slice(0, i))
-      if (i >= TAGLINE.length) {
-        clearInterval(timer)
-        setDone(true)
+    let timeout: NodeJS.Timeout
+
+    if (phase === 'typing') {
+      if (displayed.length < TAGLINE.length) {
+        timeout = setTimeout(() => {
+          setDisplayed(TAGLINE.slice(0, displayed.length + 1))
+        }, 50)
+      } else {
+        timeout = setTimeout(() => setPhase('pause'), 2000)
       }
-    }, 45)
-    return () => clearInterval(timer)
-  }, [])
+    } else if (phase === 'pause') {
+      timeout = setTimeout(() => setPhase('deleting'), 0)
+    } else if (phase === 'deleting') {
+      if (displayed.length > 0) {
+        timeout = setTimeout(() => {
+          setDisplayed(displayed.slice(0, -1))
+        }, 30)
+      } else {
+        timeout = setTimeout(() => setPhase('pauseEmpty'), 500)
+      }
+    } else if (phase === 'pauseEmpty') {
+      timeout = setTimeout(() => setPhase('typing'), 0)
+    }
+
+    return () => clearTimeout(timeout)
+  }, [displayed, phase])
+
+  const showCursor = phase === 'typing' || phase === 'deleting'
 
   return (
     <p className="text-emerald-200/85 text-lg sm:text-xl mb-2 font-medium min-h-[1.75rem]">
       {displayed}
-      {!done && <span className="typewriter-cursor opacity-80" />}
+      {showCursor && <span className="typewriter-cursor opacity-80" />}
     </p>
   )
 }

@@ -12,9 +12,9 @@ import {
 } from '@/components/ui/table'
 import {
   UtensilsCrossed, Leaf, Flame, Edit2, Send, Sparkles, User,
-  PlusCircle, FileDown, RefreshCw, AlertTriangle, TrendingUp, X, Check,
+  PlusCircle, FileDown, BarChart3, AlertTriangle, DollarSign, X, Check, Bot,
 } from 'lucide-react'
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts'
 import { MenuItem, menuItems as initialMenuItems } from '@/lib/menu-data'
 
 interface Message {
@@ -42,7 +42,7 @@ function TypingIndicator() {
   )
 }
 
-// Bar chart colours per category
+// Donut chart colours per category
 const CATEGORY_COLORS: Record<string, string> = {
   'Main Course': '#10b981',
   'Appetizer':   '#f59e0b',
@@ -59,6 +59,7 @@ export function OwnerDashboard() {
   const [items, setItems] = useState<MenuItem[]>(initialMenuItems)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState<EditForm>({ name: '', price: '', stock: '', category: '' })
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   // Chat
   const [messages, setMessages] = useState<Message[]>([
@@ -83,12 +84,13 @@ export function OwnerDashboard() {
   const vegCount = items.filter(i => i.isVegetarian).length
   const spicyCount = items.filter(i => i.isSpicy).length
   const lowStock = items.filter(i => i.stock < 15)
-  const revenueEstimate = items.reduce((sum, i) => sum + i.price * i.stock * 0.3, 0)
+  const menuValue = items.reduce((sum, i) => sum + i.price, 0)
+  const avgPrice = menuValue / totalDishes
 
-  // Category chart data
+  // Category donut chart data
   const categoryMap: Record<string, number> = {}
   items.forEach(i => { categoryMap[i.category] = (categoryMap[i.category] ?? 0) + 1 })
-  const chartData = Object.entries(categoryMap).map(([cat, count]) => ({ cat, count }))
+  const chartData = Object.entries(categoryMap).map(([name, value]) => ({ name, value }))
 
   const toggleAvailability = (id: string) => {
     setItems(prev => prev.map(i => i.id === id ? { ...i, available: !i.available } : i))
@@ -144,7 +146,7 @@ export function OwnerDashboard() {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 relative">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
@@ -155,13 +157,13 @@ export function OwnerDashboard() {
         {/* Quick Actions */}
         <div className="flex gap-2 flex-wrap">
           <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5 text-xs">
-            <PlusCircle className="h-3.5 w-3.5" /> Add Dish
+            <PlusCircle className="h-3.5 w-3.5" /> Add New Dish
           </Button>
           <Button size="sm" variant="outline" className="border-emerald-200 text-emerald-700 hover:bg-emerald-50 gap-1.5 text-xs">
-            <FileDown className="h-3.5 w-3.5" /> Export PDF
+            <BarChart3 className="h-3.5 w-3.5" /> View Analytics
           </Button>
           <Button size="sm" variant="outline" className="border-emerald-200 text-emerald-700 hover:bg-emerald-50 gap-1.5 text-xs">
-            <RefreshCw className="h-3.5 w-3.5" /> Bulk Price Update
+            <FileDown className="h-3.5 w-3.5" /> Export Menu
           </Button>
         </div>
       </div>
@@ -217,11 +219,11 @@ export function OwnerDashboard() {
         <Card className="border-emerald-100">
           <CardContent className="p-4 flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
-              <TrendingUp className="h-4 w-4 text-emerald-600" />
+              <DollarSign className="h-4 w-4 text-emerald-600" />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">Daily Est.</p>
-              <p className="text-xl font-bold text-emerald-600">${revenueEstimate.toFixed(0)}</p>
+              <p className="text-xs text-muted-foreground">Est. Menu Value</p>
+              <p className="text-xl font-bold text-emerald-600">${menuValue.toFixed(0)} <span className="text-xs font-normal text-muted-foreground">(avg ${avgPrice.toFixed(2)})</span></p>
             </div>
           </CardContent>
         </Card>
@@ -229,27 +231,39 @@ export function OwnerDashboard() {
 
       {/* Chart + Table */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        {/* Category Bar Chart */}
+        {/* Category Donut Chart */}
         <Card className="border-emerald-100 lg:col-span-1">
           <CardHeader className="pb-2 pt-4 px-4">
-            <CardTitle className="text-sm font-semibold text-foreground">Dishes by Category</CardTitle>
+            <CardTitle className="text-sm font-semibold text-foreground">Menu Breakdown</CardTitle>
           </CardHeader>
           <CardContent className="px-2 pb-4">
-            <ResponsiveContainer width="100%" height={180}>
-              <BarChart data={chartData} layout="vertical" margin={{ left: 8, right: 16, top: 4, bottom: 4 }}>
-                <XAxis type="number" hide />
-                <YAxis type="category" dataKey="cat" width={78} tick={{ fontSize: 11, fill: '#6b7280' }} axisLine={false} tickLine={false} />
-                <Tooltip
-                  cursor={{ fill: 'rgba(16,185,129,0.06)' }}
-                  contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #d1fae5' }}
-                  formatter={(v: number) => [`${v} dish${v !== 1 ? 'es' : ''}`, '']}
-                />
-                <Bar dataKey="count" radius={[0, 4, 4, 0]} barSize={14}>
+            <ResponsiveContainer width="100%" height={200}>
+              <PieChart>
+                <Pie
+                  data={chartData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={50}
+                  outerRadius={75}
+                  paddingAngle={3}
+                  dataKey="value"
+                  nameKey="name"
+                >
                   {chartData.map(entry => (
-                    <Cell key={entry.cat} fill={CATEGORY_COLORS[entry.cat] ?? '#10b981'} />
+                    <Cell key={entry.name} fill={CATEGORY_COLORS[entry.name] ?? '#10b981'} />
                   ))}
-                </Bar>
-              </BarChart>
+                </Pie>
+                <Tooltip 
+                  contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #d1fae5' }}
+                  formatter={(value: number, name: string) => [`${value} dish${value !== 1 ? 'es' : ''}`, name]}
+                />
+                <Legend 
+                  iconType="circle" 
+                  iconSize={8} 
+                  wrapperStyle={{ fontSize: 11 }}
+                  formatter={(value) => <span className="text-muted-foreground">{value}</span>}
+                />
+              </PieChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
@@ -352,70 +366,101 @@ export function OwnerDashboard() {
         </Card>
       </div>
 
-      {/* AI Assistant chat */}
-      <Card className="overflow-hidden border-0 shadow-xl">
-        <div className="bg-slate-900 px-4 py-3 border-b border-slate-700 flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-md">
-            <Sparkles className="h-4 w-4 text-white" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-white text-sm">AI Menu Assistant</h3>
-            <span className="text-[11px] text-slate-400">Manage your menu with natural language</span>
-          </div>
-          <span className="ml-auto flex items-center gap-1 text-[10px] text-emerald-400 font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Online
-          </span>
+      {/* Floating AI Button */}
+      <button
+        onClick={() => setDrawerOpen(true)}
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 hover:scale-105 transition-all duration-200"
+      >
+        <div className="relative">
+          <Bot className="h-5 w-5" />
+          <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-400 rounded-full animate-pulse" />
         </div>
+        <span className="font-medium text-sm">AI Assistant</span>
+      </button>
 
-        <ScrollArea className="h-44 bg-slate-900 p-4" ref={scrollRef}>
-          <div className="space-y-3">
-            {messages.map(message => (
-              <div key={message.id}>
-                <div className={`flex gap-2 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  {message.role === 'assistant' && (
-                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Sparkles className="h-3 w-3 text-white" />
-                    </div>
-                  )}
-                  <div className={`max-w-[80%] rounded-xl px-3 py-2 text-xs leading-relaxed ${
-                    message.role === 'user' ? 'bg-emerald-600 text-white rounded-tr-sm' : 'bg-slate-700 text-slate-100 rounded-tl-sm'
-                  }`}>
-                    <p className="whitespace-pre-line">{message.content}</p>
-                  </div>
-                  {message.role === 'user' && (
-                    <div className="w-6 h-6 rounded-full bg-emerald-700 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <User className="h-3 w-3 text-white" />
-                    </div>
-                  )}
-                </div>
-                <p
-                  className={`text-[10px] text-slate-500 mt-1 ${message.role === 'user' ? 'text-right mr-8' : 'ml-8'}`}
-                  suppressHydrationWarning
-                >
-                  {formatTime(message.timestamp)}
-                </p>
-              </div>
-            ))}
-            {isLoading && <TypingIndicator />}
+      {/* Slide-in Drawer Overlay */}
+      {drawerOpen && (
+        <div 
+          className="fixed inset-0 bg-black/40 z-40 transition-opacity duration-300"
+          onClick={() => setDrawerOpen(false)}
+        />
+      )}
+
+      {/* Slide-in Drawer */}
+      <div className={`fixed top-0 right-0 h-full w-[400px] max-w-full bg-slate-900 z-50 shadow-2xl transform transition-transform duration-300 ease-out ${drawerOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div className="flex flex-col h-full">
+          {/* Drawer Header */}
+          <div className="px-4 py-4 border-b border-slate-700 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-md">
+              <Sparkles className="h-5 w-5 text-white" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-white">AI Menu Assistant</h3>
+              <span className="text-xs text-slate-400">Manage your menu with natural language</span>
+            </div>
+            <button
+              onClick={() => setDrawerOpen(false)}
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 transition-colors"
+            >
+              <X className="h-4 w-4" />
+            </button>
           </div>
-        </ScrollArea>
 
-        {error && <div className="px-4 py-1.5 bg-red-900/50 text-red-300 text-xs">{error}</div>}
+          {/* Messages */}
+          <ScrollArea className="flex-1 p-4" ref={scrollRef}>
+            <div className="space-y-3">
+              {messages.map(message => (
+                <div key={message.id}>
+                  <div className={`flex gap-2 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    {message.role === 'assistant' && (
+                      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <Sparkles className="h-3.5 w-3.5 text-white" />
+                      </div>
+                    )}
+                    <div className={`max-w-[80%] rounded-xl px-3 py-2 text-sm leading-relaxed ${
+                      message.role === 'user' ? 'bg-emerald-600 text-white rounded-tr-sm' : 'bg-slate-700 text-slate-100 rounded-tl-sm'
+                    }`}>
+                      <p className="whitespace-pre-line">{message.content}</p>
+                    </div>
+                    {message.role === 'user' && (
+                      <div className="w-7 h-7 rounded-full bg-emerald-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <User className="h-3.5 w-3.5 text-white" />
+                      </div>
+                    )}
+                  </div>
+                  <p
+                    className={`text-[10px] text-slate-500 mt-1 ${message.role === 'user' ? 'text-right mr-9' : 'ml-9'}`}
+                    suppressHydrationWarning
+                  >
+                    {formatTime(message.timestamp)}
+                  </p>
+                </div>
+              ))}
+              {isLoading && <TypingIndicator />}
+            </div>
+          </ScrollArea>
 
-        <form onSubmit={handleChatSubmit} className="flex gap-2 p-3 bg-slate-800 border-t border-slate-700">
-          <Input
-            value={chatInput}
-            onChange={e => setChatInput(e.target.value)}
-            placeholder='e.g. "Update Kung Pao Chicken price to $18.99"'
-            className="flex-1 bg-slate-700 border-slate-600 text-white text-sm placeholder:text-slate-400 focus:border-emerald-500 h-8"
-            disabled={isLoading}
-          />
-          <Button type="submit" disabled={isLoading || !chatInput.trim()} size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white h-8 w-8 p-0">
-            <Send className="h-3.5 w-3.5" />
-          </Button>
-        </form>
-      </Card>
+          {error && <div className="px-4 py-2 bg-red-900/50 text-red-300 text-xs">{error}</div>}
+
+          {/* Input */}
+          <form onSubmit={handleChatSubmit} className="flex gap-2 p-4 border-t border-slate-700">
+            <Input
+              value={chatInput}
+              onChange={e => setChatInput(e.target.value)}
+              placeholder='e.g. "Update Kung Pao Chicken price to $19.99"'
+              className="flex-1 bg-slate-800 border-slate-600 text-white text-sm placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500"
+              disabled={isLoading}
+            />
+            <Button
+              type="submit"
+              disabled={isLoading || !chatInput.trim()}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+            >
+              <Send className="h-4 w-4" />
+            </Button>
+          </form>
+        </div>
+      </div>
     </div>
   )
 }

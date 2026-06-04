@@ -135,16 +135,16 @@ export function MenuGrid({ items, onAddToInquiry }: MenuGridProps) {
   return (
     <div className="space-y-6">
       {/* Today's Specials */}
-      <div>
+      <div className="overflow-visible">
         <div className="flex items-center gap-2 mb-3">
           <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
           <h3 className="font-semibold text-foreground text-sm tracking-wide uppercase">Today&apos;s Specials</h3>
         </div>
-        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
+        <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-none overflow-y-visible">
           {specials.map(item => (
             <div
               key={item.id}
-              className="flex-shrink-0 w-44 glass-jade rounded-xl p-3 flex flex-col gap-1.5 hover:shadow-md transition-all duration-300 hover:-translate-y-1"
+              className="flex-shrink-0 w-44 glass-jade rounded-xl p-3 flex flex-col gap-1.5 hover:shadow-md transition-all duration-300 hover:-translate-y-2"
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-foreground leading-tight line-clamp-1">{item.name}</span>

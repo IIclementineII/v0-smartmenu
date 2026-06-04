@@ -159,20 +159,11 @@ export default function SmartMenuPage() {
             <TypewriterTagline />
           </div>
 
-          {/* Subtitle with shimmer */}
-          <p
-            className="shimmer-text text-emerald-300/60 text-sm mb-5 max-w-md cursor-default fade-up"
-            style={{ animationDelay: '320ms' }}
-          >
-            AI-Powered Menu Experience
-          </p>
-
-          {/* Button with ripple */}
           <Button
             onClick={scrollToContent}
             size="lg"
-            className="btn-ripple bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white border-0 shadow-lg shadow-amber-500/30 gap-2 px-6 py-5 text-sm font-semibold rounded-full fade-up"
-            style={{ animationDelay: '420ms' }}
+            className="btn-ripple bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white border-0 shadow-lg shadow-amber-500/30 gap-2 px-6 py-5 text-sm font-semibold rounded-full fade-up mt-4"
+            style={{ animationDelay: '320ms' }}
           >
             <Sparkles className="h-4 w-4" />
             Ask Our AI
@@ -191,15 +182,17 @@ export default function SmartMenuPage() {
               <User className="h-4 w-4" />
               Customer
             </TabsTrigger>
-            <TabsTrigger
-              value="owner"
-              className="gap-2 tab-indicator data-[state=active]:bg-emerald-600 data-[state=active]:text-white transition-colors duration-200 relative z-10 whitespace-nowrap min-w-fit"
-            >
-              <LayoutDashboard className="h-4 w-4" />
-              <span>Owner Dashboard</span>
-              {/* Notification dot - small 8px circle at top-right corner */}
-              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full animate-pulse ring-2 ring-white" />
-            </TabsTrigger>
+            <div className="relative">
+              <TabsTrigger
+                value="owner"
+                className="gap-2 tab-indicator data-[state=active]:bg-emerald-600 data-[state=active]:text-white transition-colors duration-200 relative z-10 whitespace-nowrap"
+              >
+                <LayoutDashboard className="h-4 w-4" />
+                <span>Owner Dashboard</span>
+              </TabsTrigger>
+              {/* Notification dot - positioned OUTSIDE the tab pill */}
+              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse ring-2 ring-white" />
+            </div>
           </TabsList>
 
           <TabsContent value="customer" className="mt-0">

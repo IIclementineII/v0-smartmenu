@@ -378,10 +378,15 @@ export function OwnerDashboard() {
         <span className="font-medium text-sm">AI Assistant</span>
       </button>
 
-      {/* Slide-in Drawer Overlay */}
+      {/* Slide-in Drawer Overlay - frosted glass effect */}
       {drawerOpen && (
         <div 
-          className="fixed inset-0 bg-black/40 z-40 transition-opacity duration-300"
+          className="fixed inset-0 z-40 transition-all duration-300"
+          style={{ 
+            backgroundColor: 'rgba(0, 0, 0, 0.2)',
+            backdropFilter: 'blur(4px)',
+            WebkitBackdropFilter: 'blur(4px)',
+          }}
           onClick={() => setDrawerOpen(false)}
         />
       )}

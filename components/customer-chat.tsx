@@ -64,7 +64,7 @@ function formatTime(date: Date): string {
 function TypingIndicator() {
   return (
     <div className="flex gap-3 justify-start">
-      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-md">
+      <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 shadow-md" style={{ background: 'linear-gradient(to bottom right, #F97316, #EA580C)' }}>
         <Sparkles className="h-3.5 w-3.5 text-white" />
       </div>
       <div className="bg-emerald-100 rounded-2xl px-3 py-2.5 flex items-center gap-1.5">
@@ -222,7 +222,7 @@ export const CustomerChat = forwardRef<CustomerChatHandle, CustomerChatProps>(
         {/* Header */}
         <div className="p-3 bg-white border-b border-emerald-100 flex-shrink-0" style={{ height: '56px' }}>
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center shadow-lg" style={{ background: 'linear-gradient(to bottom right, #F97316, #EA580C)' }}>
               <Sparkles className="h-4 w-4 text-white" />
             </div>
             <div>
@@ -253,7 +253,7 @@ export const CustomerChat = forwardRef<CustomerChatHandle, CustomerChatProps>(
                 <div key={message.id}>
                   <div className={`flex gap-2 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                     {message.role === 'assistant' && (
-                      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-md mt-0.5">
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 shadow-md mt-0.5" style={{ background: 'linear-gradient(to bottom right, #F97316, #EA580C)' }}>
                         <Sparkles className="h-3.5 w-3.5 text-white" />
                       </div>
                     )}

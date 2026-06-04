@@ -30,10 +30,10 @@ function formatTime(d: Date) {
 
 function TypingIndicator() {
   return (
-    <div className="flex gap-2 justify-start">
-      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
-        <Sparkles className="h-3 w-3 text-white" />
-      </div>
+  <div className="flex gap-2 justify-start">
+  <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(to bottom right, #F97316, #EA580C)' }}>
+  <Sparkles className="h-3 w-3 text-white" />
+  </div>
       <div className="bg-emerald-100 rounded-lg px-3 py-2 flex items-center gap-1">
         <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce-dot-1" />
         <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce-dot-2" />
@@ -460,7 +460,7 @@ export function OwnerDashboard() {
       >
         {/* Drawer Header */}
         <div className="px-4 py-4 border-b border-emerald-100 flex items-center gap-3 bg-white flex-shrink-0" style={{ height: '70px' }}>
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-md">
+          <div className="w-10 h-10 rounded-full flex items-center justify-center shadow-md" style={{ background: 'linear-gradient(to bottom right, #F97316, #EA580C)' }}>
             <Sparkles className="h-5 w-5 text-white" />
           </div>
           <div className="flex-1">
@@ -486,7 +486,7 @@ export function OwnerDashboard() {
                 <div key={message.id}>
                   <div className={`flex gap-2 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                     {message.role === 'assistant' && (
-                      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: 'linear-gradient(to bottom right, #F97316, #EA580C)' }}>
                         <Sparkles className="h-3.5 w-3.5 text-white" />
                       </div>
                     )}

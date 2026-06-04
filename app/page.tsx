@@ -64,12 +64,12 @@ function HeroTitle() {
       paddingBottom: '8px',
       lineHeight: '1.2',
       overflow: 'visible',
-      background: 'linear-gradient(90deg, #ffffff 0%, #ffffff 30%, #FFD700 48%, #FFEC80 52%, #FFD700 56%, #ffffff 70%, #ffffff 100%)',
-      backgroundSize: '300% 100%',
+      background: 'linear-gradient(90deg, #ffffff 0%, #ffffff 25%, #FFD700 40%, #FFEC80 50%, #FFD700 60%, #ffffff 75%, #ffffff 100%)',
+      backgroundSize: '400% 100%',
       WebkitBackgroundClip: 'text',
       backgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
-      animation: 'shimmer 6s infinite linear'
+      animation: 'shimmer 8s infinite linear'
     }}>
       Jade Palace Restaurant
     </h1>

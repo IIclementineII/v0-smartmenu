@@ -64,10 +64,10 @@ function HeroTitle() {
         color: 'transparent',
         WebkitTextFillColor: 'transparent',
         animation: 'title-shimmer 3s infinite linear',
-        width: '100%',
-        textAlign: 'center',
-        overflow: 'visible',
-        display: 'block',
+        display: 'inline-block',
+        padding: '0 8px',
+        paddingLeft: '8px',
+        paddingRight: '8px',
       }}
     >
       Jade Palace Restaurant
@@ -135,9 +135,10 @@ export default function SmartMenuPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background" style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
+    <div style={{ overflowX: 'hidden', maxWidth: '100vw', width: '100%' }}>
+      <div className="min-h-screen bg-background" style={{ overflowX: 'hidden', width: '100%' }}>
       {/* Hero */}
-      <section className="relative h-[320px] overflow-hidden gradient-border-bottom">
+      <section className="relative h-[320px] gradient-border-bottom" style={{ overflow: 'visible' }}>
         <div className="absolute inset-0 bg-gradient-to-br from-[#0D2B2B] via-emerald-950 to-black" />
         {/* Ambient blobs */}
         <div className="absolute top-10 left-10 w-56 h-56 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
@@ -146,7 +147,7 @@ export default function SmartMenuPage() {
         {/* Floating particles */}
         <FloatingParticles />
 
-        <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center py-6" style={{ width: '100%' }}>
+        <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center py-6" style={{ width: '100%', overflow: 'visible' }}>
           {/* Elegant Jade Logo with golden border */}
           <div 
             className="logo-icon mb-4 w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center shadow-lg shadow-emerald-500/30 fade-up cursor-pointer ring-2 ring-amber-500/60" 
@@ -184,7 +185,7 @@ export default function SmartMenuPage() {
       </section>
 
       {/* Main */}
-      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style={{ overflowX: 'hidden', width: '100%' }}>
         <Tabs defaultValue="customer" className="w-full">
           <TabsList className="mb-6 bg-white/70 backdrop-blur border border-emerald-100 shadow-sm">
             <TabsTrigger
@@ -219,6 +220,7 @@ export default function SmartMenuPage() {
 
       {/* Back to Top */}
       <BackToTopButton />
+      </div>
     </div>
   )
 }

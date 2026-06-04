@@ -53,15 +53,12 @@ function TypewriterTagline() {
 }
 
 function HeroTitle() {
-  const words = ['Jade', 'Palace', 'Restaurant']
   return (
-    <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-semibold text-white mb-2 tracking-tight text-balance fade-up" style={{ animationDelay: '80ms' }}>
-      {words.map((word, i) => (
-        <span key={word}>
-          <span className="hero-word cursor-default">{word}</span>
-          {i < words.length - 1 && ' '}
-        </span>
-      ))}
+    <h1 
+      className="hero-title font-serif text-3xl sm:text-4xl md:text-5xl font-semibold text-white mb-2 tracking-tight text-balance fade-up" 
+      style={{ animationDelay: '80ms' }}
+    >
+      Jade Palace Restaurant
     </h1>
   )
 }
@@ -138,13 +135,20 @@ export default function SmartMenuPage() {
         <FloatingParticles />
 
         <div className="relative z-10 h-full flex flex-col items-center justify-center px-4 text-center py-6">
-          {/* Logo with rotation - smaller 48px */}
+          {/* Elegant Jade Logo with golden border */}
           <div 
-            className="logo-spin mb-4 w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30 fade-up cursor-pointer" 
+            className="logo-icon mb-4 w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center shadow-lg shadow-emerald-500/30 fade-up cursor-pointer ring-2 ring-amber-500/60" 
             style={{ animationDelay: '0ms' }}
           >
-            <svg viewBox="0 0 24 24" className="w-6 h-6 text-white" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            {/* Stylized Lotus/Jade Icon */}
+            <svg viewBox="0 0 24 24" className="w-8 h-8 text-white" fill="none" stroke="currentColor" strokeWidth="1.5">
+              {/* Central jade gem shape */}
+              <path d="M12 3L4 10l8 11 8-11-8-7z" fill="currentColor" opacity="0.3" />
+              <path d="M12 3L4 10l8 11 8-11-8-7z" />
+              {/* Inner facet lines */}
+              <path d="M12 3v18M4 10h16M8 6.5L12 21M16 6.5L12 21" opacity="0.5" />
+              {/* Top accent */}
+              <circle cx="12" cy="7" r="1.5" fill="currentColor" />
             </svg>
           </div>
 
@@ -189,12 +193,12 @@ export default function SmartMenuPage() {
             </TabsTrigger>
             <TabsTrigger
               value="owner"
-              className="gap-2 tab-indicator data-[state=active]:bg-emerald-600 data-[state=active]:text-white transition-colors duration-200 relative z-10"
+              className="gap-2 tab-indicator data-[state=active]:bg-emerald-600 data-[state=active]:text-white transition-colors duration-200 relative z-10 pr-6"
             >
               <LayoutDashboard className="h-4 w-4" />
               Owner Dashboard
-              {/* Notification dot */}
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white animate-pulse" />
+              {/* Notification dot - positioned inside tab at top-right */}
+              <span className="absolute top-1 right-1.5 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
             </TabsTrigger>
           </TabsList>
 

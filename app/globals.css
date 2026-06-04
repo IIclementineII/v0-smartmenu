@@ -215,27 +215,13 @@
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
-@keyframes title-glow {
-  0% { text-shadow: -20px 0 30px rgba(240,192,64,0), 0 0 0 rgba(240,192,64,0); }
-  40% { text-shadow: -20px 0 30px rgba(240,192,64,0), 0 0 0 rgba(240,192,64,0); }
-  50% { text-shadow: 0 0 40px rgba(240,192,64,0.8), 0 0 80px rgba(240,192,64,0.4); }
-  60% { text-shadow: 20px 0 30px rgba(240,192,64,0), 0 0 0 rgba(240,192,64,0); }
-  100% { text-shadow: -20px 0 30px rgba(240,192,64,0), 0 0 0 rgba(240,192,64,0); }
-}
 .hero-title {
   background: linear-gradient(90deg, #ffffff 0%, #ffffff 40%, #F0C040 50%, #ffffff 60%, #ffffff 100%);
   background-size: 200% 100%;
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  animation: title-shimmer 4s infinite linear, title-glow 4s infinite linear;
-  padding-left: 12px;
-  padding-right: 12px;
-  padding-bottom: 8px;
-  line-height: 1.2;
-  overflow: visible;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
+  animation: title-shimmer 3s infinite linear;
 }
 
 /* ── Logo icon - STATIC, no hover effects ────────── */

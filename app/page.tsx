@@ -55,10 +55,10 @@ function TypewriterTagline() {
 function HeroTitle() {
   const words = ['Jade', 'Palace', 'Restaurant']
   return (
-    <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-semibold text-white mb-3 tracking-tight text-balance fade-up" style={{ animationDelay: '80ms' }}>
+    <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-semibold text-white mb-2 tracking-tight text-balance fade-up" style={{ animationDelay: '80ms' }}>
       {words.map((word, i) => (
-        <span key={word} className="hero-word cursor-default">
-          {word}
+        <span key={word}>
+          <span className="hero-word cursor-default">{word}</span>
           {i < words.length - 1 && ' '}
         </span>
       ))}
@@ -112,10 +112,10 @@ function BackToTopButton() {
   return (
     <button
       onClick={scrollToTop}
-      className={`back-to-top fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-emerald-600 text-white shadow-lg hover:bg-emerald-700 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center justify-center ${visible ? 'visible' : ''}`}
+      className={`back-to-top fixed bottom-6 left-6 z-40 w-10 h-10 rounded-full text-white shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center justify-center ${visible ? 'visible' : ''}`}
       aria-label="Back to top"
     >
-      <ChevronUp className="h-6 w-6" />
+      <ChevronUp className="h-5 w-5" />
     </button>
   )
 }
@@ -128,22 +128,22 @@ export default function SmartMenuPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
-      <section className="relative h-[400px] overflow-hidden gradient-border-bottom">
+      <section className="relative h-[320px] overflow-hidden gradient-border-bottom">
         <div className="absolute inset-0 bg-gradient-to-br from-[#0D2B2B] via-emerald-950 to-black" />
         {/* Ambient blobs */}
-        <div className="absolute top-16 left-16 w-72 h-72 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-8 right-12 w-80 h-80 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-10 left-10 w-56 h-56 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-4 right-8 w-64 h-64 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
         
         {/* Floating particles */}
         <FloatingParticles />
 
-        <div className="relative z-10 h-full flex flex-col items-center justify-center px-4 text-center">
-          {/* Logo with rotation */}
+        <div className="relative z-10 h-full flex flex-col items-center justify-center px-4 text-center py-6">
+          {/* Logo with rotation - smaller 48px */}
           <div 
-            className="logo-spin mb-5 w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30 fade-up cursor-pointer" 
+            className="logo-spin mb-4 w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30 fade-up cursor-pointer" 
             style={{ animationDelay: '0ms' }}
           >
-            <svg viewBox="0 0 24 24" className="w-8 h-8 text-white" fill="currentColor">
+            <svg viewBox="0 0 24 24" className="w-6 h-6 text-white" fill="currentColor">
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
             </svg>
           </div>
@@ -157,20 +157,20 @@ export default function SmartMenuPage() {
 
           {/* Subtitle with shimmer */}
           <p
-            className="shimmer-text text-emerald-300/60 text-sm sm:text-base mb-8 max-w-md cursor-default fade-up"
+            className="shimmer-text text-emerald-300/60 text-sm mb-5 max-w-md cursor-default fade-up"
             style={{ animationDelay: '320ms' }}
           >
-            AI-Powered Menu Experience — Ask anything, discover everything
+            AI-Powered Menu Experience
           </p>
 
           {/* Button with ripple */}
           <Button
             onClick={scrollToContent}
             size="lg"
-            className="btn-ripple bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white border-0 shadow-lg shadow-amber-500/30 gap-2 px-8 py-6 text-base font-semibold rounded-full fade-up"
+            className="btn-ripple bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white border-0 shadow-lg shadow-amber-500/30 gap-2 px-6 py-5 text-sm font-semibold rounded-full fade-up"
             style={{ animationDelay: '420ms' }}
           >
-            <Sparkles className="h-5 w-5" />
+            <Sparkles className="h-4 w-4" />
             Ask Our AI
           </Button>
         </div>

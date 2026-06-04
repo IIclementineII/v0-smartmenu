@@ -211,19 +211,24 @@
 /* ── Hero word glow on hover ─────────────────────── */
 .hero-word {
   display: inline-block;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease;
 }
 .hero-word:hover {
-  text-shadow: 0 0 20px rgba(217, 119, 6, 0.6), 0 0 40px rgba(217, 119, 6, 0.3);
-  transform: scale(1.05);
+  color: #D97706;
+  text-shadow: 0 0 20px rgba(217, 119, 6, 0.5), 0 0 40px rgba(217, 119, 6, 0.3);
+  transform: scale(1.03);
 }
 
 /* ── Logo rotate on hover ────────────────────────── */
+@keyframes logo-spin-once {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
 .logo-spin {
-  transition: transform 2s ease;
+  transition: transform 0.3s ease;
 }
 .logo-spin:hover {
-  transform: rotate(360deg);
+  animation: logo-spin-once 2s linear;
 }
 
 /* ── Shimmer text animation ──────────────────────── */
@@ -232,44 +237,39 @@
   100% { background-position: 200% center; }
 }
 .shimmer-text {
-  background: linear-gradient(
-    90deg,
-    rgba(217, 119, 6, 0) 0%,
-    rgba(217, 119, 6, 0.8) 50%,
-    rgba(217, 119, 6, 0) 100%
-  );
-  background-size: 200% 100%;
-  background-clip: text;
-  -webkit-background-clip: text;
   transition: all 0.3s ease;
 }
 .shimmer-text:hover {
-  animation: shimmer-wave 1.5s ease infinite;
+  background: linear-gradient(90deg, #10B981, #D97706, #10B981);
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
   color: transparent;
-  background-color: #d97706;
+  animation: shimmer-wave 1.5s ease infinite;
 }
 
 /* ── Button ripple effect ────────────────────────── */
 .btn-ripple {
   position: relative;
   overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .btn-ripple::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(255,255,255,0.4) 0%, transparent 70%);
   transform: scale(0);
   opacity: 0;
   transition: transform 0.5s ease, opacity 0.3s ease;
 }
 .btn-ripple:hover::after {
-  transform: scale(2);
+  transform: scale(2.5);
   opacity: 1;
 }
 .btn-ripple:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 40px rgba(217, 119, 6, 0.5), 0 0 20px rgba(217, 119, 6, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(217, 119, 6, 0.5), 0 0 25px rgba(217, 119, 6, 0.35);
 }
 
 /* ── Floating particles ──────────────────────────── */
@@ -342,22 +342,28 @@
 
 /* ── Dish card enhanced hover ────────────────────── */
 .dish-card {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
 }
 .dish-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(16, 185, 129, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(16, 185, 129, 0.1);
 }
 
-/* ── Quick info overlay ──────────────────────────── */
+/* ── Quick info overlay - slides up from bottom ──── */
 .dish-card .quick-info {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  padding: 8px 12px;
+  transform: translateY(100%);
   opacity: 0;
-  transform: translateY(10px);
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 .dish-card:hover .quick-info {
-  opacity: 1;
   transform: translateY(0);
+  opacity: 1;
 }
 
 /* ── Back to top button ──────────────────────────── */
@@ -366,6 +372,11 @@
   visibility: hidden;
   transform: translateY(20px);
   transition: all 0.3s ease;
+  background: rgba(16, 185, 129, 0.6);
+  backdrop-filter: blur(8px);
+}
+.back-to-top:hover {
+  background: rgba(16, 185, 129, 0.85);
 }
 .back-to-top.visible {
   opacity: 1;

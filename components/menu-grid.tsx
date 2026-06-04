@@ -77,7 +77,7 @@ function DishCard({
       </div>
 
       {/* Body */}
-      <div className="p-3">
+      <div className="p-3 pb-4">
         <div className="flex items-start justify-between gap-1 mb-1">
           <h3 className="font-semibold text-foreground text-sm leading-tight">{item.name}</h3>
           <span className="text-amber-600 font-bold text-sm whitespace-nowrap">${item.price.toFixed(2)}</span>
@@ -110,14 +110,12 @@ function DishCard({
             Ask
           </Button>
         </div>
+      </div>
 
-        {/* Quick info overlay on hover */}
-        <div className="quick-info mt-2 pt-2 border-t border-emerald-100/50">
-          <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-            <Clock className="h-3 w-3" />
-            <span>{prepTime} min prep time</span>
-          </div>
-        </div>
+      {/* Quick info overlay - slides up from bottom */}
+      <div className="quick-info flex items-center gap-1.5 text-white text-[11px] rounded-b-2xl">
+        <Clock className="h-3.5 w-3.5" />
+        <span>{prepTime} min</span>
       </div>
     </div>
   )

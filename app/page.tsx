@@ -58,6 +58,7 @@ function HeroTitle() {
       className="hero-title font-serif text-3xl sm:text-4xl md:text-5xl font-semibold mb-2 tracking-tight text-balance animate-fade-in" 
       style={{ 
         display: 'inline-block',
+        overflow: 'visible',
       }}
     >
       Jade Palace Restaurant
@@ -126,13 +127,19 @@ export default function SmartMenuPage() {
 
   return (
     <div style={{ overflowX: 'hidden', maxWidth: '100vw', width: '100%' }}>
-      <div className="min-h-screen bg-background" style={{ overflowX: 'hidden', width: '100%' }}>
+      <div className="min-h-screen" style={{ overflowX: 'hidden', width: '100%', background: 'linear-gradient(to bottom, #f0fdf4 0%, #ffffff 30%)' }}>
       {/* Hero */}
       <section className="relative h-[320px] gradient-border-bottom" style={{ overflow: 'visible' }}>
         <div className="absolute inset-0 bg-gradient-to-br from-[#0D2B2B] via-emerald-950 to-black" />
         {/* Ambient blobs */}
         <div className="absolute top-10 left-10 w-56 h-56 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-4 right-8 w-64 h-64 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+        
+        {/* Gradient fade at bottom of hero for smooth transition */}
+        <div 
+          className="absolute bottom-0 left-0 right-0 h-[60px] pointer-events-none z-20"
+          style={{ background: 'linear-gradient(to bottom, transparent, #f0fdf4)' }}
+        />
         
         {/* Floating particles */}
         <FloatingParticles />

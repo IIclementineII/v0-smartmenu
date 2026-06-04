@@ -224,6 +224,9 @@
   animation: title-shimmer 3s infinite linear;
   padding-left: 12px;
   padding-right: 12px;
+  padding-bottom: 8px;
+  line-height: 1.2;
+  overflow: visible;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }

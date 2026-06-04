@@ -208,9 +208,18 @@
   border-color: rgba(16, 185, 129, 0.38);
 }
 
-/* ── Hero title - STATIC, no hover effects ───────── */
+/* ── Hero title shimmer animation ────────────────── */
+@keyframes title-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
 .hero-title {
-  cursor: default;
+  background: linear-gradient(90deg, #ffffff 0%, #ffffff 40%, #F0C040 50%, #ffffff 60%, #ffffff 100%);
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: title-shimmer 3s infinite linear;
 }
 
 /* ── Logo icon - STATIC, no hover effects ────────── */
@@ -342,9 +351,10 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding: 8px 12px;
   transform: translateY(100%);
   opacity: 0;

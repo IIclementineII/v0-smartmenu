@@ -13,6 +13,7 @@ import {
 import {
   UtensilsCrossed, Leaf, Flame, Edit2, Send, Sparkles, User,
   PlusCircle, FileDown, BarChart3, AlertTriangle, DollarSign, X, Check, Bot,
+  ArrowUpDown, ArrowUp, ArrowDown,
 } from 'lucide-react'
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts'
 import { MenuItem, menuItems as initialMenuItems } from '@/lib/menu-data'
@@ -55,11 +56,16 @@ interface EditForm {
   name: string; price: string; stock: string; category: string
 }
 
+type SortField = 'category' | 'price' | 'stock' | null
+type SortDirection = 'asc' | 'desc'
+
 export function OwnerDashboard() {
   const [items, setItems] = useState<MenuItem[]>(initialMenuItems)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState<EditForm>({ name: '', price: '', stock: '', category: '' })
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [sortField, setSortField] = useState<SortField>(null)
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
 
   // Chat
   const [messages, setMessages] = useState<Message[]>([
@@ -91,6 +97,32 @@ export function OwnerDashboard() {
   const categoryMap: Record<string, number> = {}
   items.forEach(i => { categoryMap[i.category] = (categoryMap[i.category] ?? 0) + 1 })
   const chartData = Object.entries(categoryMap).map(([name, value]) => ({ name, value }))
+
+  // Sorting logic
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc')
+    } else {
+      setSortField(field)
+      setSortDirection('asc')
+    }
+  }
+
+  const sortedItems = [...items].sort((a, b) => {
+    if (!sortField) return 0
+    const dir = sortDirection === 'asc' ? 1 : -1
+    if (sortField === 'category') return a.category.localeCompare(b.category) * dir
+    if (sortField === 'price') return (a.price - b.price) * dir
+    if (sortField === 'stock') return (a.stock - b.stock) * dir
+    return 0
+  })
+
+  const SortIcon = ({ field }: { field: SortField }) => {
+    if (sortField !== field) return <ArrowUpDown className="h-3 w-3 ml-1 opacity-40" />
+    return sortDirection === 'asc' 
+      ? <ArrowUp className="h-3 w-3 ml-1" /> 
+      : <ArrowDown className="h-3 w-3 ml-1" />
+  }
 
   const toggleAvailability = (id: string) => {
     setItems(prev => prev.map(i => i.id === id ? { ...i, available: !i.available } : i))
@@ -276,15 +308,39 @@ export function OwnerDashboard() {
                 <TableHeader>
                   <TableRow className="bg-emerald-50/60">
                     <TableHead className="text-xs">Name</TableHead>
-                    <TableHead className="text-xs">Category</TableHead>
-                    <TableHead className="text-xs">Price</TableHead>
-                    <TableHead className="text-xs">Stock</TableHead>
+                    <TableHead 
+                      className={`text-xs cursor-pointer select-none hover:text-emerald-600 transition-colors ${sortField === 'category' ? 'text-emerald-600' : ''}`}
+                      onClick={() => handleSort('category')}
+                    >
+                      <div className="flex items-center">
+                        Category
+                        <SortIcon field="category" />
+                      </div>
+                    </TableHead>
+                    <TableHead 
+                      className={`text-xs cursor-pointer select-none hover:text-emerald-600 transition-colors ${sortField === 'price' ? 'text-emerald-600' : ''}`}
+                      onClick={() => handleSort('price')}
+                    >
+                      <div className="flex items-center">
+                        Price
+                        <SortIcon field="price" />
+                      </div>
+                    </TableHead>
+                    <TableHead 
+                      className={`text-xs cursor-pointer select-none hover:text-emerald-600 transition-colors ${sortField === 'stock' ? 'text-emerald-600' : ''}`}
+                      onClick={() => handleSort('stock')}
+                    >
+                      <div className="flex items-center">
+                        Stock
+                        <SortIcon field="stock" />
+                      </div>
+                    </TableHead>
                     <TableHead className="text-xs">Available</TableHead>
                     <TableHead className="text-xs text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {items.map(item => (
+                  {sortedItems.map(item => (
                     <>
                       <TableRow key={item.id} className="hover:bg-emerald-50/30 text-sm">
                         <TableCell className="font-medium py-2">
@@ -378,14 +434,20 @@ export function OwnerDashboard() {
         <span className="font-medium text-sm">AI Assistant</span>
       </button>
 
-      {/* Slide-in Drawer Overlay - frosted glass effect */}
+      {/* Slide-in Drawer Overlay - covers entire page with blur */}
       {drawerOpen && (
         <div 
-          className="fixed inset-0 z-40 transition-all duration-300"
+          className="transition-all duration-300"
           style={{ 
-            backgroundColor: 'rgba(0, 0, 0, 0.2)',
-            backdropFilter: 'blur(4px)',
-            WebkitBackdropFilter: 'blur(4px)',
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            backgroundColor: 'rgba(0, 0, 0, 0.25)',
+            backdropFilter: 'blur(6px)',
+            WebkitBackdropFilter: 'blur(6px)',
+            zIndex: 40,
           }}
           onClick={() => setDrawerOpen(false)}
         />

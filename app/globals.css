@@ -211,24 +211,9 @@
 }
 
 /* ── Hero title shimmer animation ────────────────── */
-@keyframes title-shimmer {
+@keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
-}
-.hero-title {
-  background: linear-gradient(90deg, #ffffff 0%, #ffffff 40%, #F0C040 50%, #ffffff 60%, #ffffff 100%);
-  background-size: 200% 100%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  animation: title-shimmer 5s infinite linear;
-  padding-left: 12px;
-  padding-right: 12px;
-  padding-bottom: 8px;
-  line-height: 1.2;
-  overflow: visible;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
 }
 
 /* ── Logo icon - STATIC, no hover effects ────────── */

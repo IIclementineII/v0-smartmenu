@@ -54,11 +54,21 @@ function TypewriterTagline() {
 
 function HeroTitle() {
   return (
-    <h1 
-      className="hero-title font-serif text-3xl sm:text-4xl md:text-5xl font-semibold mb-2 tracking-tight text-balance animate-fade-in"
-    >
-      Jade Palace Restaurant
-    </h1>
+    <div className="hero-title-wrapper">
+      {/* Outer glow layer - blurred duplicate text with animated text-shadow */}
+      <span 
+        className="hero-title-glow font-serif text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight"
+        aria-hidden="true"
+      >
+        Jade Palace Restaurant
+      </span>
+      {/* Inner shimmer layer - gradient text with background-clip */}
+      <h1 
+        className="hero-title font-serif text-3xl sm:text-4xl md:text-5xl font-semibold mb-2 tracking-tight text-balance animate-fade-in"
+      >
+        Jade Palace Restaurant
+      </h1>
+    </div>
   )
 }
 

@@ -23,49 +23,38 @@ interface CustomerChatProps {
 
 const API_URL = 'https://smartmenu-agent-production.up.railway.app/api/chat'
 
-const QUICK_REPLIES = [
-  'Vegetarian options',
-  'No peanuts',
-  'Under $15',
-  'Spicy dishes',
+// Pool of suggestion chips for variety
+const ALL_CHIPS = [
+  "What's gluten-free?",
+  "Any dairy-free options?",
+  "Show me soups",
+  "What's most popular?",
+  "Best dishes under $10",
+  "Any vegan options?",
+  "What pairs well with Peking Duck?",
+  "How long does delivery take?",
+  "What's the chef's recommendation?",
+  "Show me appetizers",
+  "Any nut-free dishes?",
+  "What's good for sharing?",
+  "Show me desserts",
+  "Anything light and healthy?",
+  "What's spicy but vegetarian?",
 ]
 
-// Smart suggestion chips based on conversation context
-function getSuggestionChips(messages: Message[]): string[] {
-  if (messages.length === 0) return ['Full menu', "Today's specials", 'Under $15']
+// Get random chips, excluding previously shown ones
+function getRandomChips(previousChips: string[], count: number = 3): string[] {
+  const available = ALL_CHIPS.filter(chip => !previousChips.includes(chip))
+  // If not enough available, use all chips
+  const pool = available.length >= count ? available : ALL_CHIPS
   
-  const lastAssistantMsg = [...messages].reverse().find(m => m.role === 'assistant')
-  if (!lastAssistantMsg) return ['Full menu', "Today's specials", 'Under $15']
-  
-  const content = lastAssistantMsg.content.toLowerCase()
-  
-  // Check for welcome message
-  if (content.includes('welcome') || content.includes("i'm your ai menu assistant")) {
-    return ['Vegetarian options', 'No peanuts', 'Spicy dishes']
+  // Fisher-Yates shuffle and take first `count`
+  const shuffled = [...pool]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
   }
-  
-  // Check for vegetarian-related response
-  if (content.includes('vegetarian') || content.includes('vegan') || content.includes('plant-based')) {
-    return ['Show prices', 'Any allergens?', 'Spicy options']
-  }
-  
-  // Check for allergen-related response
-  if (content.includes('allergen') || content.includes('peanut') || content.includes('gluten') || content.includes('allergy')) {
-    return ['Vegetarian options', 'Under $15', 'Full menu']
-  }
-  
-  // Check for spicy-related response
-  if (content.includes('spicy') || content.includes('heat') || content.includes('hot')) {
-    return ['Mild options', 'Vegetarian', 'Under $15']
-  }
-  
-  // Check for price-related response
-  if (content.includes('$') || content.includes('price') || content.includes('cost')) {
-    return ['Most popular', 'Vegetarian', "Today's specials"]
-  }
-  
-  // Default fallback
-  return ['Full menu', "Today's specials", 'Under $15']
+  return shuffled.slice(0, count)
 }
 
 function formatTime(date: Date): string {
@@ -151,6 +140,7 @@ export const CustomerChat = forwardRef<CustomerChatHandle, CustomerChatProps>(
     const [input, setInput] = useState('')
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const [currentChips, setCurrentChips] = useState<string[]>(() => getRandomChips([]))
     const scrollRef = useRef<HTMLDivElement>(null)
     const sessionId = useRef(`session-${Date.now()}`)
 
@@ -191,6 +181,8 @@ export const CustomerChat = forwardRef<CustomerChatHandle, CustomerChatProps>(
             timestamp: new Date(),
           },
         ])
+        // Generate new random chips, excluding the ones just shown
+        setCurrentChips(prev => getRandomChips(prev))
       } catch {
         setError('Failed to get response. Please try again.')
         setMessages(prev => [
@@ -202,6 +194,8 @@ export const CustomerChat = forwardRef<CustomerChatHandle, CustomerChatProps>(
             timestamp: new Date(),
           },
         ])
+        // Generate new random chips even on error
+        setCurrentChips(prev => getRandomChips(prev))
       } finally {
         setIsLoading(false)
       }
@@ -214,9 +208,6 @@ export const CustomerChat = forwardRef<CustomerChatHandle, CustomerChatProps>(
       e.preventDefault()
       send(input)
     }
-
-    // Get suggestion chips for the last assistant message
-    const suggestionChips = getSuggestionChips(messages)
 
     return (
       <div 
@@ -285,7 +276,7 @@ export const CustomerChat = forwardRef<CustomerChatHandle, CustomerChatProps>(
                   {/* Smart suggestion chips after assistant messages */}
                   {showSuggestions && (
                     <SuggestionChips 
-                      chips={suggestionChips} 
+                      chips={currentChips} 
                       onChipClick={send} 
                       disabled={isLoading}
                     />
@@ -300,20 +291,6 @@ export const CustomerChat = forwardRef<CustomerChatHandle, CustomerChatProps>(
         {error && (
           <div className="px-3 py-1.5 bg-red-50 text-red-600 text-xs flex-shrink-0 border-t border-red-100">{error}</div>
         )}
-
-        {/* Quick-reply chips */}
-        <div className="px-3 pt-2 pb-0 bg-white flex gap-1.5 flex-wrap flex-shrink-0 border-t border-emerald-100" style={{ minHeight: '36px' }}>
-          {QUICK_REPLIES.map(chip => (
-            <button
-              key={chip}
-              onClick={() => send(chip)}
-              disabled={isLoading}
-              className="text-[11px] px-2.5 py-1 rounded-full border border-emerald-300 text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-colors duration-150 disabled:opacity-40"
-            >
-              {chip}
-            </button>
-          ))}
-        </div>
 
         {/* Input */}
         <form onSubmit={handleSubmit} className="p-3 bg-white border-t border-emerald-100 flex gap-2 flex-shrink-0" style={{ height: '56px' }}>

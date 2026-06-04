@@ -17,9 +17,9 @@ export function CustomerView({ items }: CustomerViewProps) {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-5 min-h-[calc(100vh-200px)]" style={{ width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
-      {/* Left Panel — flexible, takes remaining space */}
-      <div style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+    <div className="flex flex-col lg:flex-row gap-5 min-h-[calc(100vh-200px)]">
+      {/* Left Panel — 65% */}
+      <div className="w-full lg:w-[65%] overflow-auto">
         <div className="mb-4">
           <h2 className="text-lg font-semibold text-foreground">Our Menu</h2>
           <p className="text-sm text-muted-foreground">Hover a dish to ask the AI about it, or use the filters below.</p>
@@ -27,8 +27,8 @@ export function CustomerView({ items }: CustomerViewProps) {
         <MenuGrid items={items} onAddToInquiry={handleAddToInquiry} />
       </div>
 
-      {/* Right Panel — fixed width chat panel */}
-      <div className="min-h-[480px] flex flex-col" style={{ flexShrink: 0, width: '340px', maxWidth: '100%' }}>
+      {/* Right Panel — 35% */}
+      <div className="w-full lg:w-[35%] lg:min-h-0 min-h-[480px] flex flex-col">
         <CustomerChat ref={chatRef} className="flex-1" />
       </div>
     </div>

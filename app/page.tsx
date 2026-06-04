@@ -55,11 +55,7 @@ function TypewriterTagline() {
 function HeroTitle() {
   return (
     <h1 
-      className="hero-title font-serif text-3xl sm:text-4xl md:text-5xl font-semibold mb-2 tracking-tight text-balance animate-fade-in" 
-      style={{ 
-        display: 'inline-block',
-        overflow: 'visible',
-      }}
+      className="hero-title font-serif text-3xl sm:text-4xl md:text-5xl font-semibold mb-2 tracking-tight text-balance animate-fade-in"
     >
       Jade Palace Restaurant
     </h1>
@@ -126,25 +122,18 @@ export default function SmartMenuPage() {
   }
 
   return (
-    <div style={{ overflowX: 'hidden', maxWidth: '100vw', width: '100%' }}>
-      <div className="min-h-screen" style={{ overflowX: 'hidden', width: '100%', background: 'linear-gradient(to bottom, #f0fdf4 0%, #ffffff 30%)' }}>
+    <div className="min-h-screen bg-background">
       {/* Hero */}
-      <section className="relative h-[320px] gradient-border-bottom" style={{ overflow: 'visible' }}>
+      <section className="relative h-[320px] overflow-hidden gradient-border-bottom">
         <div className="absolute inset-0 bg-gradient-to-br from-[#0D2B2B] via-emerald-950 to-black" />
         {/* Ambient blobs */}
         <div className="absolute top-10 left-10 w-56 h-56 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-4 right-8 w-64 h-64 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
         
-        {/* Gradient fade at bottom of hero for smooth transition */}
-        <div 
-          className="absolute bottom-0 left-0 right-0 h-[60px] pointer-events-none z-20"
-          style={{ background: 'linear-gradient(to bottom, transparent, #f0fdf4)' }}
-        />
-        
         {/* Floating particles */}
         <FloatingParticles />
 
-        <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center py-6" style={{ width: '100%', overflow: 'visible' }}>
+        <div className="relative z-10 h-full flex flex-col items-center justify-center px-4 text-center py-6">
           {/* Elegant Jade Logo with golden border */}
           <div 
             className="logo-icon mb-4 w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center shadow-lg shadow-emerald-500/30 fade-up cursor-pointer ring-2 ring-amber-500/60" 
@@ -182,7 +171,7 @@ export default function SmartMenuPage() {
       </section>
 
       {/* Main */}
-      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style={{ overflowX: 'hidden', width: '100%' }}>
+      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs defaultValue="customer" className="w-full">
           <TabsList className="mb-6 bg-white/70 backdrop-blur border border-emerald-100 shadow-sm">
             <TabsTrigger
@@ -217,7 +206,6 @@ export default function SmartMenuPage() {
 
       {/* Back to Top */}
       <BackToTopButton />
-      </div>
     </div>
   )
 }

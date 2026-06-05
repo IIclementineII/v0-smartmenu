@@ -1,14 +1,32 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { CustomerView } from '@/components/customer-view'
 import { OwnerDashboard } from '@/components/owner-dashboard'
-import { menuItems } from '@/lib/menu-data'
+import { menuItems as initialMenuItems, MenuItem } from '@/lib/menu-data'
 import { User, LayoutDashboard, Sparkles, ChevronUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 const TAGLINE = 'Where Tradition Meets Innovation'
+const DISHES_API_URL = 'https://smartmenu-agent-production.up.railway.app/api/dishes'
+
+// Map raw API dish object to MenuItem format
+function mapDish(raw: Record<string, unknown>): MenuItem {
+  return {
+    id: (raw._id as string) || (raw.id as string) || String(Date.now()),
+    name: (raw.name as string) || 'Unknown Dish',
+    description: (raw.description as string) || '',
+    price: typeof raw.price === 'number' ? raw.price : 0,
+    category: (raw.category as string) || 'Main Course',
+    isVegetarian: (raw.vegetarian as boolean) || (raw.isVegetarian as boolean) || false,
+    isSpicy: (raw.spicy as boolean) || (raw.isSpicy as boolean) || false,
+    allergens: Array.isArray(raw.allergens) ? raw.allergens as string[] : [],
+    available: raw.available !== false,
+    stock: typeof raw.stock === 'number' ? raw.stock : 50,
+    image: (raw.image as string) || undefined,
+  }
+}
 
 function TypewriterTagline() {
   const [displayed, setDisplayed] = useState('')
@@ -142,6 +160,28 @@ function BackToTopButton() {
 }
 
 export default function SmartMenuPage() {
+  const [menuItems, setMenuItems] = useState<MenuItem[]>(initialMenuItems)
+
+  // Fetch live menu data from API
+  const refreshMenu = useCallback(async () => {
+    try {
+      const res = await fetch(DISHES_API_URL)
+      if (!res.ok) return
+      const data = await res.json()
+      const dishes = Array.isArray(data) ? data : (data.dishes || [])
+      if (dishes.length > 0) {
+        setMenuItems(dishes.map(mapDish))
+      }
+    } catch {
+      // Silently fail - keep existing data
+    }
+  }, [])
+
+  // Fetch menu on mount
+  useEffect(() => {
+    refreshMenu()
+  }, [refreshMenu])
+
   const scrollToContent = () => {
     document.getElementById('main-content')?.scrollIntoView({ behavior: 'smooth' })
   }
@@ -225,7 +265,7 @@ export default function SmartMenuPage() {
           </TabsContent>
 
           <TabsContent value="owner" className="mt-0">
-            <OwnerDashboard />
+            <OwnerDashboard items={menuItems} onRefresh={refreshMenu} />
           </TabsContent>
         </Tabs>
       </main>

@@ -16,14 +16,18 @@ import {
   ArrowUpDown, ArrowUp, ArrowDown,
 } from 'lucide-react'
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts'
-import { MenuItem, menuItems as initialMenuItems } from '@/lib/menu-data'
+import { MenuItem } from '@/lib/menu-data'
 
 interface Message {
   id: string; role: 'user' | 'assistant'; content: string; timestamp: Date
 }
 
+interface OwnerDashboardProps {
+  items: MenuItem[]
+  onRefresh: () => Promise<void>
+}
+
 const API_URL = 'https://smartmenu-agent-production.up.railway.app/api/chat'
-const DISHES_API_URL = 'https://smartmenu-agent-production.up.railway.app/api/dishes'
 
 function formatTime(d: Date) {
   return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
@@ -92,8 +96,9 @@ interface EditForm {
 type SortField = 'category' | 'price' | 'stock' | null
 type SortDirection = 'asc' | 'desc'
 
-export function OwnerDashboard() {
-  const [items, setItems] = useState<MenuItem[]>(initialMenuItems)
+export function OwnerDashboard({ items: propItems, onRefresh }: OwnerDashboardProps) {
+  // Local state for optimistic UI updates during inline editing
+  const [localItems, setLocalItems] = useState<MenuItem[]>(propItems)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState<EditForm>({ name: '', price: '', stock: '', category: '' })
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -114,37 +119,26 @@ export function OwnerDashboard() {
   const scrollRef = useRef<HTMLDivElement>(null)
   const sessionId = useRef(`owner-${Date.now()}`)
 
-  // Fetch dishes from API and update local state
-  const fetchDishes = async () => {
-    try {
-      const res = await fetch(DISHES_API_URL)
-      if (!res.ok) return
-      const data = await res.json()
-      if (Array.isArray(data)) {
-        setItems(data)
-      } else if (data.dishes && Array.isArray(data.dishes)) {
-        setItems(data.dishes)
-      }
-    } catch {
-      // Silently fail - keep existing data
-    }
-  }
+  // Sync local state when prop changes (e.g., after onRefresh)
+  useEffect(() => {
+    setLocalItems(propItems)
+  }, [propItems])
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight
   }, [messages, isLoading])
 
   // Stats
-  const totalDishes = items.length
-  const vegCount = items.filter(i => i.isVegetarian).length
-  const spicyCount = items.filter(i => i.isSpicy).length
-  const lowStock = items.filter(i => i.stock < 15)
-  const menuValue = items.reduce((sum, i) => sum + i.price, 0)
+  const totalDishes = localItems.length
+  const vegCount = localItems.filter(i => i.isVegetarian).length
+  const spicyCount = localItems.filter(i => i.isSpicy).length
+  const lowStock = localItems.filter(i => i.stock < 15)
+  const menuValue = localItems.reduce((sum, i) => sum + i.price, 0)
   const avgPrice = menuValue / totalDishes
 
   // Category donut chart data
   const categoryMap: Record<string, number> = {}
-  items.forEach(i => { categoryMap[i.category] = (categoryMap[i.category] ?? 0) + 1 })
+  localItems.forEach(i => { categoryMap[i.category] = (categoryMap[i.category] ?? 0) + 1 })
   const chartData = Object.entries(categoryMap).map(([name, value]) => ({ name, value }))
 
   // Sorting logic
@@ -157,7 +151,7 @@ export function OwnerDashboard() {
     }
   }
 
-  const sortedItems = [...items].sort((a, b) => {
+  const sortedItems = [...localItems].sort((a, b) => {
     if (!sortField) return 0
     const dir = sortDirection === 'asc' ? 1 : -1
     if (sortField === 'category') return a.category.localeCompare(b.category) * dir
@@ -174,7 +168,7 @@ export function OwnerDashboard() {
   }
 
   const toggleAvailability = (id: string) => {
-    setItems(prev => prev.map(i => i.id === id ? { ...i, available: !i.available } : i))
+    setLocalItems(prev => prev.map(i => i.id === id ? { ...i, available: !i.available } : i))
   }
 
   const startEdit = (item: MenuItem) => {
@@ -185,7 +179,7 @@ export function OwnerDashboard() {
   const cancelEdit = () => setEditingId(null)
 
   const saveEdit = (id: string) => {
-    setItems(prev => prev.map(i =>
+    setLocalItems(prev => prev.map(i =>
       i.id === id
         ? { ...i, name: editForm.name, price: parseFloat(editForm.price) || i.price, stock: parseInt(editForm.stock) || i.stock, category: editForm.category }
         : i
@@ -215,7 +209,7 @@ export function OwnerDashboard() {
   timestamp: new Date(),
   }])
       // Refresh dish list to reflect any changes made by the AI
-      await fetchDishes()
+      await onRefresh()
     } catch {
       setError('Failed to process command. Please try again.')
       setMessages(prev => [...prev, {

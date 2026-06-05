@@ -1,33 +1,41 @@
-# v0-smartmenu
+# SmartMenu Agent — Frontend 🍽️
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [v0](https://v0.app).
+> AI-powered menu experience for Jade Palace Restaurant.
 
-## Built with v0
+This is the frontend for [SmartMenu Agent](https://github.com/IIclementineII/smartmenu-agent), built for the [Google Cloud Rapid Agent Hackathon 2026](https://rapid-agent.devpost.com/) — MongoDB Partner Track.
 
-This repository is linked to a [v0](https://v0.app) project. You can continue developing by visiting the link below -- start new chats to make changes, and v0 will push commits directly to this repo. Every merge to `main` will automatically deploy.
+**Live Demo:** https://v0-smartmenu.vercel.app/  
+**Backend Repository:** https://github.com/IIclementineII/smartmenu-agent
 
-[Continue working on v0 →](https://v0.app/chat/projects/prj_fj77wNEsK5HW1VjEgl13Y9sOIMSp)
+---
 
-## Getting Started
+## Pages
 
-First, run the development server:
+**Customer View** — Chat with Jade, our AI concierge. Filter dishes by dietary needs, ask about allergens, get personalized recommendations.
+
+**Owner Dashboard** — Manage menu items, update prices and stock, toggle availability — all via natural language AI commands.
+
+---
+
+## Tech Stack
+
+Next.js · Tailwind CSS · Deployed on Vercel
+
+---
+
+## Local Development
 
 ```bash
+git clone https://github.com/IIclementineII/v0-smartmenu.git
+cd v0-smartmenu
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-## Learn More
+## License
 
-To learn more, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [v0 Documentation](https://v0.app/docs) - learn about v0 and how to use it.
+MIT License — see [LICENSE](LICENSE)

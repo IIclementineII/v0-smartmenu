@@ -13,7 +13,7 @@ import {
 import {
   UtensilsCrossed, Leaf, Flame, Edit2, Send, Sparkles, User,
   PlusCircle, FileDown, BarChart3, AlertTriangle, DollarSign, X, Check, Bot,
-  ArrowUpDown, ArrowUp, ArrowDown,
+  ArrowUpDown, ArrowUp, ArrowDown, Trophy, CheckCircle,
 } from 'lucide-react'
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts'
 import { MenuItem } from '@/lib/menu-data'
@@ -362,6 +362,42 @@ export function OwnerDashboard({ items: propItems, onRefresh }: OwnerDashboardPr
         </div>
       )
     })}
+  </div>
+  
+  {/* Quick Insights */}
+  <div className="mt-4 px-2">
+    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2 font-medium">Quick Insights</p>
+    <div className="bg-emerald-50/60 rounded-lg p-2.5 flex items-center justify-between gap-2">
+      <div className="flex flex-col items-center flex-1 text-center">
+        <div className="flex items-center gap-1 text-muted-foreground mb-0.5">
+          <Trophy className="h-3 w-3 text-amber-500" />
+          <span className="text-[10px]">Top Category</span>
+        </div>
+        <span className="text-xs font-semibold text-foreground">
+          {chartData.length > 0 ? chartData.reduce((a, b) => a.value > b.value ? a : b).name : 'N/A'}
+        </span>
+      </div>
+      <div className="w-px h-8 bg-emerald-200" />
+      <div className="flex flex-col items-center flex-1 text-center">
+        <div className="flex items-center gap-1 text-muted-foreground mb-0.5">
+          <AlertTriangle className="h-3 w-3 text-amber-500" />
+          <span className="text-[10px]">Low Stock</span>
+        </div>
+        <span className="text-xs font-semibold text-foreground">
+          {lowStock.length} items
+        </span>
+      </div>
+      <div className="w-px h-8 bg-emerald-200" />
+      <div className="flex flex-col items-center flex-1 text-center">
+        <div className="flex items-center gap-1 text-muted-foreground mb-0.5">
+          <CheckCircle className="h-3 w-3 text-emerald-500" />
+          <span className="text-[10px]">Available</span>
+        </div>
+        <span className="text-xs font-semibold text-foreground">
+          {localItems.filter(i => i.available).length}/{totalDishes}
+        </span>
+      </div>
+    </div>
   </div>
   </CardContent>
         </Card>

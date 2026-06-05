@@ -28,7 +28,10 @@ export function CustomerView({ items }: CustomerViewProps) {
       </div>
 
       {/* Right Panel — 35% */}
-      <div className="w-full lg:w-[35%] lg:min-h-0 min-h-[480px] flex flex-col">
+      <div 
+        className="w-full lg:w-[35%] lg:min-h-0 min-h-[480px] flex flex-col lg:sticky"
+        style={{ top: '2rem', alignSelf: 'flex-start', maxHeight: 'calc(100vh - 2rem)' }}
+      >
         <CustomerChat ref={chatRef} className="flex-1" />
       </div>
     </div>

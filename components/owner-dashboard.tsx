@@ -334,15 +334,36 @@ export function OwnerDashboard({ items: propItems, onRefresh }: OwnerDashboardPr
                   contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #d1fae5' }}
                   formatter={(value: number, name: string) => [`${value} dish${value !== 1 ? 'es' : ''}`, name]}
                 />
-                <Legend 
-                  iconType="circle" 
-                  iconSize={8} 
-                  wrapperStyle={{ fontSize: 11 }}
-                  formatter={(value) => <span className="text-muted-foreground">{value}</span>}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
+<Legend
+  iconType="circle"
+  iconSize={8}
+  wrapperStyle={{ fontSize: 10, paddingTop: 10 }}
+  />
+  </PieChart>
+  </ResponsiveContainer>
+  
+  {/* Category stats list */}
+  <div className="mt-3 space-y-1.5 px-2">
+    {chartData.map(entry => {
+      const percentage = totalDishes > 0 ? Math.round((entry.value / totalDishes) * 100) : 0
+      return (
+        <div key={entry.name} className="flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2">
+            <span 
+              className="w-2.5 h-2.5 rounded-full flex-shrink-0" 
+              style={{ backgroundColor: CATEGORY_COLORS[entry.name] ?? '#10b981' }} 
+            />
+            <span className="text-muted-foreground">{entry.name}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="font-medium text-foreground">{entry.value}</span>
+            <span className="text-muted-foreground w-8 text-right">{percentage}%</span>
+          </div>
+        </div>
+      )
+    })}
+  </div>
+  </CardContent>
         </Card>
 
         {/* Data Table */}

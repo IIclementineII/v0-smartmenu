@@ -21,12 +21,21 @@ const FILTERS: { key: Filter; label: string }[] = [
   { key: 'Premium', label: 'Premium \uD83D\uDC51' },
   { key: 'No Allergens', label: 'No Allergens \uD83C\uDF3F' },
 ]
-const SPECIALS_IDS = ['1', '4', '7'] // Kung Pao Chicken, Peking Duck, Buddha Delight
-const TODAYS_SPECIAL_ID = '4' // Peking Duck
 
-// Prep times for dishes (in minutes)
-const PREP_TIMES: Record<string, number> = {
-  '1': 15, '2': 12, '3': 8, '4': 25, '5': 5, '6': 5, '7': 18, '8': 10,
+// Specials matched by dish name instead of id (for MongoDB ObjectId compatibility)
+const SPECIALS_NAMES = ['Kung Pao Chicken', 'Peking Duck', 'Buddha Delight']
+const TODAYS_SPECIAL_NAME = 'Peking Duck'
+
+// Prep times for dishes (in minutes) - keyed by name for API compatibility
+const PREP_TIMES_BY_NAME: Record<string, number> = {
+  'Kung Pao Chicken': 15,
+  'Hot and Sour Soup': 12,
+  'Spring Rolls': 8,
+  'Peking Duck': 25,
+  'Vegetable Fried Rice': 5,
+  'Wonton Soup': 5,
+  'Buddha Delight': 18,
+  'Sesame Chicken': 10,
 }
 
 function getCategoryIcon(item: MenuItem) {
@@ -54,8 +63,8 @@ function DishCard({
   index: number
   onAddToInquiry?: (item: MenuItem) => void
 }) {
-  const isTodaysSpecial = item.id === TODAYS_SPECIAL_ID
-  const prepTime = PREP_TIMES[item.id] || 15
+  const isTodaysSpecial = item.name === TODAYS_SPECIAL_NAME
+  const prepTime = PREP_TIMES_BY_NAME[item.name] || 15
   
   return (
     <div
@@ -125,10 +134,10 @@ function DishCard({
 export function MenuGrid({ items, onAddToInquiry }: MenuGridProps) {
   const [activeFilter, setActiveFilter] = useState<Filter>('All')
 
-  const specials = items.filter(i => SPECIALS_IDS.includes(i.id))
+  const specials = items.filter(i => SPECIALS_NAMES.includes(i.name))
 
   const filtered = items.filter(item => {
-    const prepTime = PREP_TIMES[item.id] || 15
+    const prepTime = PREP_TIMES_BY_NAME[item.name] || 15
     if (activeFilter === 'All') return true
     if (activeFilter === 'Vegetarian') return item.isVegetarian
     if (activeFilter === 'Spicy') return item.isSpicy

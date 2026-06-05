@@ -23,6 +23,7 @@ interface Message {
 }
 
 const API_URL = 'https://smartmenu-agent-production.up.railway.app/api/chat'
+const DISHES_API_URL = 'https://smartmenu-agent-production.up.railway.app/api/dishes'
 
 function formatTime(d: Date) {
   return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
@@ -113,6 +114,22 @@ export function OwnerDashboard() {
   const scrollRef = useRef<HTMLDivElement>(null)
   const sessionId = useRef(`owner-${Date.now()}`)
 
+  // Fetch dishes from API and update local state
+  const fetchDishes = async () => {
+    try {
+      const res = await fetch(DISHES_API_URL)
+      if (!res.ok) return
+      const data = await res.json()
+      if (Array.isArray(data)) {
+        setItems(data)
+      } else if (data.dishes && Array.isArray(data.dishes)) {
+        setItems(data.dishes)
+      }
+    } catch {
+      // Silently fail - keep existing data
+    }
+  }
+
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight
   }, [messages, isLoading])
@@ -197,6 +214,8 @@ export function OwnerDashboard() {
   content: data.reply || 'Command received.',
   timestamp: new Date(),
   }])
+      // Refresh dish list to reflect any changes made by the AI
+      await fetchDishes()
     } catch {
       setError('Failed to process command. Please try again.')
       setMessages(prev => [...prev, {

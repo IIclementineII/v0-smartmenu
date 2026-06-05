@@ -19,6 +19,7 @@ export interface CustomerChatHandle {
 
 interface CustomerChatProps {
   className?: string
+  style?: React.CSSProperties
 }
 
 const API_URL = 'https://smartmenu-agent-production.up.railway.app/api/chat'
@@ -162,7 +163,7 @@ function SuggestionChips({ chips, onChipClick, disabled }: SuggestionChipsProps)
 }
 
 export const CustomerChat = forwardRef<CustomerChatHandle, CustomerChatProps>(
-  function CustomerChat({ className }, ref) {
+  function CustomerChat({ className, style }, ref) {
     const [messages, setMessages] = useState<Message[]>([
       {
         id: '1',
@@ -252,7 +253,7 @@ export const CustomerChat = forwardRef<CustomerChatHandle, CustomerChatProps>(
     return (
       <div 
         className={`flex flex-col rounded-2xl overflow-hidden shadow-xl border border-emerald-200 ${className}`}
-        style={{ height: 'calc(100vh - 200px)', maxHeight: '600px' }}
+        style={style}
       >
         {/* Header */}
         <div className="p-3 bg-white border-b border-emerald-100 flex-shrink-0" style={{ height: '56px' }}>

@@ -17,7 +17,7 @@ export function CustomerView({ items }: CustomerViewProps) {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-5 min-h-[calc(100vh-200px)] items-start">
+    <div className="flex flex-col lg:flex-row gap-5 items-start">
       {/* Left Panel — 65% */}
       <div className="w-full lg:w-[65%]">
         <div className="mb-4">
@@ -28,11 +28,8 @@ export function CustomerView({ items }: CustomerViewProps) {
       </div>
 
       {/* Right Panel — 35% */}
-      <div 
-        className="w-full lg:w-[35%] min-h-[480px] lg:min-h-0"
-        style={{ position: 'sticky', top: '2rem', alignSelf: 'flex-start', maxHeight: 'calc(100vh - 4rem)' }}
-      >
-        <CustomerChat ref={chatRef} className="h-full" />
+      <div className="w-full lg:w-[35%]">
+        <CustomerChat ref={chatRef} style={{ height: 'calc(100vh - 160px)' }} />
       </div>
     </div>
   )

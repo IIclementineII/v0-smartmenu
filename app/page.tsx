@@ -260,7 +260,7 @@ export default function SmartMenuPage() {
             </div>
           </TabsList>
 
-          <TabsContent value="customer" className="mt-0">
+          <TabsContent value="customer" className="mt-0 overflow-visible">
             <CustomerView items={menuItems} />
           </TabsContent>
 

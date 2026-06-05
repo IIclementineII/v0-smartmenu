@@ -17,7 +17,7 @@ export function CustomerView({ items }: CustomerViewProps) {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-5 min-h-[calc(100vh-200px)] items-start">
+    <div className="flex flex-col lg:flex-row gap-5 items-start" style={{ overflow: 'visible' }}>
       {/* Left Panel — 65% */}
       <div className="w-full lg:w-[65%]">
         <div className="mb-4">

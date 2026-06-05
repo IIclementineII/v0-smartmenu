@@ -17,9 +17,9 @@ export function CustomerView({ items }: CustomerViewProps) {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-5 min-h-[calc(100vh-200px)]">
+    <div className="flex flex-col lg:flex-row gap-5 min-h-[calc(100vh-200px)] items-start">
       {/* Left Panel — 65% */}
-      <div className="w-full lg:w-[65%] overflow-auto">
+      <div className="w-full lg:w-[65%]">
         <div className="mb-4">
           <h2 className="text-lg font-semibold text-foreground">Our Menu</h2>
           <p className="text-sm text-muted-foreground">Hover a dish to ask the AI about it, or use the filters below.</p>
@@ -28,8 +28,11 @@ export function CustomerView({ items }: CustomerViewProps) {
       </div>
 
       {/* Right Panel — 35% */}
-      <div className="w-full lg:w-[35%] lg:min-h-0 min-h-[480px] flex flex-col">
-        <CustomerChat ref={chatRef} className="flex-1" />
+      <div 
+        className="w-full lg:w-[35%] min-h-[480px] lg:min-h-0"
+        style={{ position: 'sticky', top: '2rem', alignSelf: 'flex-start', maxHeight: 'calc(100vh - 4rem)' }}
+      >
+        <CustomerChat ref={chatRef} className="h-full" />
       </div>
     </div>
   )

@@ -13,19 +13,56 @@ import {
 import {
   UtensilsCrossed, Leaf, Flame, Edit2, Send, Sparkles, User,
   PlusCircle, FileDown, BarChart3, AlertTriangle, DollarSign, X, Check, Bot,
-  ArrowUpDown, ArrowUp, ArrowDown,
+  ArrowUpDown, ArrowUp, ArrowDown, Trophy, CheckCircle,
 } from 'lucide-react'
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts'
-import { MenuItem, menuItems as initialMenuItems } from '@/lib/menu-data'
+import { MenuItem } from '@/lib/menu-data'
 
 interface Message {
   id: string; role: 'user' | 'assistant'; content: string; timestamp: Date
+}
+
+interface OwnerDashboardProps {
+  items: MenuItem[]
+  onRefresh: () => Promise<void>
 }
 
 const API_URL = 'https://smartmenu-agent-production.up.railway.app/api/chat'
 
 function formatTime(d: Date) {
   return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
+}
+
+// Simple markdown renderer for AI responses
+function renderMarkdown(text: string): React.ReactNode {
+  const lines = text.split('\n')
+  const elements: React.ReactNode[] = []
+  
+  lines.forEach((line, idx) => {
+    let processed = line.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    
+    if (line.trim().startsWith('* ') || line.trim().startsWith('- ') || line.trim().startsWith('• ')) {
+      const bulletContent = line.trim().replace(/^[\*\-•]\s*/, '')
+      const processedBullet = bulletContent.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      elements.push(
+        <div key={idx} className="flex gap-2 ml-2">
+          <span>•</span>
+          <span dangerouslySetInnerHTML={{ __html: processedBullet }} />
+        </div>
+      )
+    } else if (line.trim() === '') {
+      elements.push(<br key={idx} />)
+    } else {
+      elements.push(
+        <span key={idx}>
+          <span dangerouslySetInnerHTML={{ __html: processed }} />
+          {idx < lines.length - 1 && <br />}
+        </span>
+      )
+    }
+  })
+  
+  return <>{elements}</>
 }
 
 function TypingIndicator() {
@@ -59,8 +96,9 @@ interface EditForm {
 type SortField = 'category' | 'price' | 'stock' | null
 type SortDirection = 'asc' | 'desc'
 
-export function OwnerDashboard() {
-  const [items, setItems] = useState<MenuItem[]>(initialMenuItems)
+export function OwnerDashboard({ items: propItems, onRefresh }: OwnerDashboardProps) {
+  // Local state for optimistic UI updates during inline editing
+  const [localItems, setLocalItems] = useState<MenuItem[]>(propItems)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState<EditForm>({ name: '', price: '', stock: '', category: '' })
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -81,21 +119,26 @@ export function OwnerDashboard() {
   const scrollRef = useRef<HTMLDivElement>(null)
   const sessionId = useRef(`owner-${Date.now()}`)
 
+  // Sync local state when prop changes (e.g., after onRefresh)
+  useEffect(() => {
+    setLocalItems(propItems)
+  }, [propItems])
+
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight
   }, [messages, isLoading])
 
   // Stats
-  const totalDishes = items.length
-  const vegCount = items.filter(i => i.isVegetarian).length
-  const spicyCount = items.filter(i => i.isSpicy).length
-  const lowStock = items.filter(i => i.stock < 15)
-  const menuValue = items.reduce((sum, i) => sum + i.price, 0)
+  const totalDishes = localItems.length
+  const vegCount = localItems.filter(i => i.isVegetarian).length
+  const spicyCount = localItems.filter(i => i.isSpicy).length
+  const lowStock = localItems.filter(i => i.stock < 15)
+  const menuValue = localItems.reduce((sum, i) => sum + i.price, 0)
   const avgPrice = menuValue / totalDishes
 
   // Category donut chart data
   const categoryMap: Record<string, number> = {}
-  items.forEach(i => { categoryMap[i.category] = (categoryMap[i.category] ?? 0) + 1 })
+  localItems.forEach(i => { categoryMap[i.category] = (categoryMap[i.category] ?? 0) + 1 })
   const chartData = Object.entries(categoryMap).map(([name, value]) => ({ name, value }))
 
   // Sorting logic
@@ -108,7 +151,7 @@ export function OwnerDashboard() {
     }
   }
 
-  const sortedItems = [...items].sort((a, b) => {
+  const sortedItems = [...localItems].sort((a, b) => {
     if (!sortField) return 0
     const dir = sortDirection === 'asc' ? 1 : -1
     if (sortField === 'category') return a.category.localeCompare(b.category) * dir
@@ -125,7 +168,7 @@ export function OwnerDashboard() {
   }
 
   const toggleAvailability = (id: string) => {
-    setItems(prev => prev.map(i => i.id === id ? { ...i, available: !i.available } : i))
+    setLocalItems(prev => prev.map(i => i.id === id ? { ...i, available: !i.available } : i))
   }
 
   const startEdit = (item: MenuItem) => {
@@ -136,7 +179,7 @@ export function OwnerDashboard() {
   const cancelEdit = () => setEditingId(null)
 
   const saveEdit = (id: string) => {
-    setItems(prev => prev.map(i =>
+    setLocalItems(prev => prev.map(i =>
       i.id === id
         ? { ...i, name: editForm.name, price: parseFloat(editForm.price) || i.price, stock: parseInt(editForm.stock) || i.stock, category: editForm.category }
         : i
@@ -160,11 +203,13 @@ export function OwnerDashboard() {
       })
       if (!res.ok) throw new Error(`API ${res.status}`)
       const data = await res.json()
-      setMessages(prev => [...prev, {
-        id: (Date.now() + 1).toString(), role: 'assistant',
-        content: data.response || data.message || 'Command received.',
-        timestamp: new Date(),
-      }])
+  setMessages(prev => [...prev, {
+  id: (Date.now() + 1).toString(), role: 'assistant',
+  content: data.reply || 'Command received.',
+  timestamp: new Date(),
+  }])
+      // Refresh dish list to reflect any changes made by the AI
+      await onRefresh()
     } catch {
       setError('Failed to process command. Please try again.')
       setMessages(prev => [...prev, {
@@ -289,15 +334,72 @@ export function OwnerDashboard() {
                   contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #d1fae5' }}
                   formatter={(value: number, name: string) => [`${value} dish${value !== 1 ? 'es' : ''}`, name]}
                 />
-                <Legend 
-                  iconType="circle" 
-                  iconSize={8} 
-                  wrapperStyle={{ fontSize: 11 }}
-                  formatter={(value) => <span className="text-muted-foreground">{value}</span>}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
+<Legend
+  iconType="circle"
+  iconSize={8}
+  wrapperStyle={{ fontSize: 10, paddingTop: 10 }}
+  />
+  </PieChart>
+  </ResponsiveContainer>
+  
+  {/* Category stats list */}
+  <div className="mt-3 space-y-1.5 px-2">
+    {chartData.map(entry => {
+      const percentage = totalDishes > 0 ? Math.round((entry.value / totalDishes) * 100) : 0
+      return (
+        <div key={entry.name} className="flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2">
+            <span 
+              className="w-2.5 h-2.5 rounded-full flex-shrink-0" 
+              style={{ backgroundColor: CATEGORY_COLORS[entry.name] ?? '#10b981' }} 
+            />
+            <span className="text-muted-foreground">{entry.name}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="font-medium text-foreground">{entry.value}</span>
+            <span className="text-muted-foreground w-8 text-right">{percentage}%</span>
+          </div>
+        </div>
+      )
+    })}
+  </div>
+  
+  {/* Quick Insights */}
+  <div className="mt-4 px-2">
+    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2 font-medium">Quick Insights</p>
+    <div className="bg-emerald-50/60 rounded-lg p-2.5 flex items-center justify-between gap-2">
+      <div className="flex flex-col items-center flex-1 text-center">
+        <div className="flex items-center gap-1 text-muted-foreground mb-0.5">
+          <Trophy className="h-3 w-3 text-amber-500" />
+          <span className="text-[10px]">Top Category</span>
+        </div>
+        <span className="text-xs font-semibold text-foreground">
+          {chartData.length > 0 ? chartData.reduce((a, b) => a.value > b.value ? a : b).name : 'N/A'}
+        </span>
+      </div>
+      <div className="w-px h-8 bg-emerald-200" />
+      <div className="flex flex-col items-center flex-1 text-center">
+        <div className="flex items-center gap-1 text-muted-foreground mb-0.5">
+          <AlertTriangle className="h-3 w-3 text-amber-500" />
+          <span className="text-[10px]">Low Stock</span>
+        </div>
+        <span className="text-xs font-semibold text-foreground">
+          {lowStock.length} items
+        </span>
+      </div>
+      <div className="w-px h-8 bg-emerald-200" />
+      <div className="flex flex-col items-center flex-1 text-center">
+        <div className="flex items-center gap-1 text-muted-foreground mb-0.5">
+          <CheckCircle className="h-3 w-3 text-emerald-500" />
+          <span className="text-[10px]">Available</span>
+        </div>
+        <span className="text-xs font-semibold text-foreground">
+          {localItems.filter(i => i.available).length}/{totalDishes}
+        </span>
+      </div>
+    </div>
+  </div>
+  </CardContent>
         </Card>
 
         {/* Data Table */}
@@ -491,10 +593,10 @@ export function OwnerDashboard() {
                       </div>
                     )}
                     <div className={`max-w-[80%] rounded-xl px-3 py-2 text-sm leading-relaxed ${
-                      message.role === 'user' ? 'bg-emerald-600 text-white rounded-tr-sm' : 'bg-emerald-100 text-emerald-900 rounded-tl-sm'
-                    }`}>
-                      <p className="whitespace-pre-line">{message.content}</p>
-                    </div>
+  message.role === 'user' ? 'bg-emerald-600 text-white rounded-tr-sm' : 'bg-emerald-100 text-emerald-900 rounded-tl-sm'
+  }`}>
+  <div className="leading-relaxed">{renderMarkdown(message.content)}</div>
+  </div>
                     {message.role === 'user' && (
                       <div className="w-7 h-7 rounded-full bg-emerald-700 flex items-center justify-center flex-shrink-0 mt-0.5">
                         <User className="h-3.5 w-3.5 text-white" />

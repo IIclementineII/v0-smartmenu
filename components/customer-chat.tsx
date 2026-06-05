@@ -61,6 +61,41 @@ function formatTime(date: Date): string {
   return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
 }
 
+// Simple markdown renderer for AI responses
+function renderMarkdown(text: string): React.ReactNode {
+  // Split by lines and process
+  const lines = text.split('\n')
+  const elements: React.ReactNode[] = []
+  
+  lines.forEach((line, idx) => {
+    // Process bold text: **text** -> <strong>text</strong>
+    let processed = line.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    
+    // Check if line is a bullet point
+    if (line.trim().startsWith('* ') || line.trim().startsWith('- ') || line.trim().startsWith('• ')) {
+      const bulletContent = line.trim().replace(/^[\*\-•]\s*/, '')
+      const processedBullet = bulletContent.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      elements.push(
+        <div key={idx} className="flex gap-2 ml-2">
+          <span>•</span>
+          <span dangerouslySetInnerHTML={{ __html: processedBullet }} />
+        </div>
+      )
+    } else if (line.trim() === '') {
+      elements.push(<br key={idx} />)
+    } else {
+      elements.push(
+        <span key={idx}>
+          <span dangerouslySetInnerHTML={{ __html: processed }} />
+          {idx < lines.length - 1 && <br />}
+        </span>
+      )
+    }
+  })
+  
+  return <>{elements}</>
+}
+
 function TypingIndicator() {
   return (
     <div className="flex gap-3 justify-start">
@@ -182,7 +217,7 @@ export const CustomerChat = forwardRef<CustomerChatHandle, CustomerChatProps>(
           {
             id: (Date.now() + 1).toString(),
             role: 'assistant',
-            content: data.response || data.message || "I received your message but couldn't process it properly.",
+            content: data.reply || "I received your message but couldn't process it properly.",
             timestamp: new Date(),
           },
         ])
@@ -264,7 +299,7 @@ export const CustomerChat = forwardRef<CustomerChatHandle, CustomerChatProps>(
                           : 'bg-emerald-100 text-emerald-900 rounded-tl-sm'
                       }`}
                     >
-                      <p className="whitespace-pre-line leading-relaxed">{message.content}</p>
+                      <div className="leading-relaxed">{renderMarkdown(message.content)}</div>
                     </div>
                     {message.role === 'user' && (
                       <div className="w-7 h-7 rounded-full bg-emerald-700 flex items-center justify-center flex-shrink-0 mt-0.5">
